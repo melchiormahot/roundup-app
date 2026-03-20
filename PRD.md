@@ -8,7 +8,8 @@ A web app that helps users donate to curated charities by tracking simulated tra
 ### Tech Stack
 - **Framework:** Next.js 15 (App Router, TypeScript)
 - **Styling:** Tailwind CSS + Framer Motion for animations
-- **Database:** Supabase (Postgres + Auth + Row Level Security)
+- **Database:** SQLite via better-sqlite3 + Drizzle ORM
+- **Auth:** Simple email/password with iron-session (no external service needed)
 - **PDF:** @react-pdf/renderer for tax documents
 - **State:** Zustand for client state
 - **Icons:** Lucide React
@@ -37,16 +38,17 @@ A web app that helps users donate to curated charities by tracking simulated tra
 ### Setup
 - [ ] Initialize Next.js 15 project with TypeScript, Tailwind CSS, App Router
 - [ ] Configure Tailwind with the Deep Navy color palette as custom theme
-- [ ] Set up Supabase client with environment variables (.env.local.example)
-- [ ] Create database schema (see Data Model below)
+- [ ] Set up SQLite database with better-sqlite3 and Drizzle ORM
+- [ ] Create database schema and migrations (see Data Model below)
+- [ ] Seed database with charity data, sample transactions, and tax rules
 - [ ] Set up Zustand store for client state
 - [ ] Create shared UI components: Card, Badge, ProgressBar, Button, Toggle, Toast
 
 ### Auth
 - [ ] Sign up page (email + password)
 - [ ] Login page
-- [ ] Auth middleware protecting app routes
-- [ ] Supabase Auth integration
+- [ ] Auth middleware protecting app routes (iron-session)
+- [ ] Password hashing with bcrypt
 
 ### Onboarding Flow (8 steps, /onboarding route)
 - [ ] Step 1: Welcome screen with animated logo ("Give effortlessly. Save on taxes.")
@@ -137,11 +139,12 @@ A web app that helps users donate to curated charities by tracking simulated tra
 
 ---
 
-## Data Model (Supabase)
+## Data Model (SQLite via Drizzle ORM)
 
 ### users
-- id (uuid, PK, from Supabase Auth)
-- email (text)
+- id (text, PK, nanoid)
+- email (text, unique)
+- password_hash (text)
 - name (text)
 - jurisdiction (text, default 'FR')
 - income_bracket (int, 0-3)
