@@ -74,6 +74,49 @@ The base app is built with static seed data. This PRD adds a simulation layer th
 
 ---
 
+## Iteration Rounds
+
+After building all features above, run these refinement passes:
+
+### Iteration 1: Visual Polish of Simulation UI
+- [ ] The Demo Mode section in Settings should feel like a "control panel" with clear visual separation from regular settings
+- [ ] Simulation buttons should have distinct colours: Day (blue), Week (green), Month (purple), Reset (red outline), Jump to Year End (gold)
+- [ ] Add a simulation timeline visualization: a horizontal bar showing where the user is in the simulated year (Jan to Dec) with current position marker
+- [ ] Each simulation button should show a brief animated summary after running: "Generated 6 transactions, €4.20 in round-ups, €2.52 to MSF, €1.47 to WWF, €0.21 to Ligue"
+- [ ] The "Reset Data" button should have a confirmation dialog: "This will clear all simulated data. Are you sure?"
+
+### Iteration 2: Transaction Realism
+- [ ] Add spending pattern variation: some weeks the user "goes out more" (more restaurants, bars), some weeks are quieter
+- [ ] Add occasional larger purchases: €200+ online shopping, €150 train tickets (once every 2 to 3 simulated weeks)
+- [ ] Add recurring transactions: same coffee shop every weekday morning, weekly supermarket run on Saturday
+- [ ] Ensure no two consecutive days have identical transaction counts or similar totals
+- [ ] Add time-of-day realism: coffee at 7 to 9am, lunch at 12 to 2pm, supermarket at 5 to 7pm, restaurant at 7 to 10pm, bar at 9pm to midnight
+
+### Iteration 3: Dashboard Intelligence
+- [ ] After simulation, the delta indicator should update: "+€4.20 today" or "+€28.40 this week"
+- [ ] The sparkline/bar chart should reflect actual simulated daily data, not static
+- [ ] Impact card should rotate through charity-specific outcomes based on actual amounts donated to each
+- [ ] If a user has been simulating for 4+ weeks, show a trend line: "Your giving is trending up 12% vs last month"
+- [ ] The year-end projection should recalculate based on the user's actual average, not a fixed formula
+
+### Iteration 4: Edge Cases and Error Handling
+- [ ] Handle simulation when user has no charities selected: show toast "Select at least one charity before simulating"
+- [ ] Handle simulation when allocation percentages don't add to 100%: normalize them automatically
+- [ ] Handle "Jump to Year End" gracefully: show a progress bar since it generates hundreds of transactions
+- [ ] If user resets data mid-year, the tax dashboard should reset correctly (all progress bars to 0, all amounts to €0)
+- [ ] Test all notification types render correctly in the inbox after simulation
+- [ ] Verify PDF generation works with edge case amounts (€0.01 round-ups, €0.99 round-ups, exactly €0 round-up)
+
+### Iteration 5: Final Review
+- [ ] Run the full simulation flow: sign up, onboard, simulate 6 months of data, check every screen
+- [ ] Verify all numbers are consistent: dashboard totals match sum of all round-ups, tax calculations match allocations, PDF numbers match dashboard
+- [ ] Verify animations still work smoothly with real data volumes (200+ transactions)
+- [ ] Check mobile responsiveness of all simulation UI at 375px
+- [ ] Run the dev server, click through every screen, fix anything that looks off
+- [ ] Commit final state with message "Simulation engine complete with all iterations"
+
+---
+
 ## Technical Notes
 - All simulation logic should be in a dedicated `/src/lib/simulation.ts` module
 - Simulation state (current simulated date, day counter) stored in the database
