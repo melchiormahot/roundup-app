@@ -107,12 +107,47 @@ After building all features above, run these refinement passes:
 - [ ] Test all notification types render correctly in the inbox after simulation
 - [ ] Verify PDF generation works with edge case amounts (€0.01 round-ups, €0.99 round-ups, exactly €0 round-up)
 
-### Iteration 5: Final Review
+### Iteration 5: Seasonal Spending Patterns
+- [ ] Add monthly spending modifiers that affect transaction volume and amounts:
+  - January: 70% of normal (post-holiday belt tightening, "la rentrée" effect)
+  - February: 80% of normal (quiet month)
+  - March to May: 100% baseline
+  - June: 110% (pre-summer shopping, travel bookings)
+  - July: 130% (holiday spending: restaurants, activities, travel. Add beach bar, ice cream, museum categories)
+  - August: 120% (still holiday, but winding down)
+  - September: 115% ("la rentrée" shopping: school supplies, new clothes, home items)
+  - October to November: 100% baseline
+  - December: 150% (Christmas shopping spike: gifts, Christmas markets, festive dining. Add "Marché de Noël", "Galeries Lafayette", "FNAC Gifts" merchants)
+- [ ] Add seasonal merchant names: summer gets "Plage Bar", "Glacier", "Musée d'Orsay". December gets "Marché de Noël", "Bûche de Noël bakery"
+- [ ] The year-end projection should account for seasonal patterns, not assume flat spending
+
+### Iteration 6: Multi-User Demo Profiles
+- [ ] Add "Demo Profiles" section in Demo Mode with 3 pre-built user personas:
+  - **Sophie, 24, Student (Paris)**: low income bracket (under €30k), 2 charities selected (MSF + WWF), mostly coffee and metro transactions, €8 to €15 per week in round-ups
+  - **Thomas, 35, Engineer (Lyon)**: mid income bracket (€60-100k), 4 charities selected, more restaurants and online shopping, €20 to €35 per week in round-ups
+  - **Marie, 52, Executive (Bordeaux)**: high income bracket (€100k+), 3 charities selected, frequent dining and travel, €30 to €50 per week in round-ups, approaching tax ceiling by October
+- [ ] "Load Profile" button that sets up the user's settings, charities, and spending pattern to match the persona
+- [ ] Each profile pre-simulates a different number of months: Sophie (2 months), Thomas (6 months), Marie (10 months, near ceiling)
+- [ ] This lets you demo three different user journeys without manual setup
+
+### Iteration 7: Notification Copy Variants
+- [ ] Create 3 copy variants for each notification type:
+  - **Weekly summary**: Variant A (factual: "14 round-ups, €9.20 donated"), Variant B (warm: "You helped 3 organisations this week with €9.20 of effortless generosity"), Variant C (motivational: "Another week of making a difference. €9.20 closer to your goal.")
+  - **Monthly progress**: Variant A (data focused: "March: €34.20 donated. Tax saving: €22.57"), Variant B (impact focused: "In March, your €34.20 funded 4 medical kits and planted 12 trees"), Variant C (comparison: "You donated 18% more than last month. Your generosity is growing.")
+  - **Milestone**: Variant A (celebration: "€500 donated! You're making a real difference."), Variant B (context: "€500 donated. That's 62 emergency meals through Restos du Coeur."), Variant C (forward: "€500 down, €1,500 to go before maxing your tax benefit.")
+  - **Crisis**: Variant A (urgent: "Earthquake in Morocco. Redirect your round-ups now."), Variant B (empathetic: "Morocco needs help. One tap redirects your giving for 7 days."), Variant C (social: "2,400 RoundUp users have already redirected. Join them?")
+- [ ] Add a "Notification Style" toggle in Demo Mode: Factual / Warm / Motivational
+- [ ] This helps test which copy resonates before going live
+
+### Iteration 8: Final Review
 - [ ] Run the full simulation flow: sign up, onboard, simulate 6 months of data, check every screen
 - [ ] Verify all numbers are consistent: dashboard totals match sum of all round-ups, tax calculations match allocations, PDF numbers match dashboard
 - [ ] Verify animations still work smoothly with real data volumes (200+ transactions)
 - [ ] Check mobile responsiveness of all simulation UI at 375px
 - [ ] Run the dev server, click through every screen, fix anything that looks off
+- [ ] Test all three demo profiles end-to-end: load profile, check dashboard, check tax, check notifications
+- [ ] Test seasonal spending: simulate a full year, verify December is visibly higher than January
+- [ ] Test all three notification copy variants render correctly
 - [ ] Commit final state with message "Simulation engine complete with all iterations"
 
 ---
