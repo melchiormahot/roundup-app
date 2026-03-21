@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-navy-900: #060e1a;
+  --color-navy-800: #0b1628;
+  --color-navy-700: #0f1f38;
+  --color-navy-600: #152a4a;
+  --color-navy-500: #1a3050;
+  --color-navy-400: #1f3a5f;
+  --color-text-primary: #d0dff0;
+  --color-text-secondary: #7a9cc6;
+  --color-accent-green: #5ce0b8;
+  --color-accent-blue: #4a9eff;
+  --color-accent-purple: #b48eff;
+  --color-accent-red: #ff6b6b;
+  --color-accent-yellow: #ffd93d;
+  --color-accent-orange: #ff9a76;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  height: 100%;
+  background: #060e1a;
+  color: #d0dff0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0b1628;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a3050;
+  border-radius: 3px;
+}
+
+/* Smooth page transitions */
+.page-transition {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Glow effects */
+.glow-green {
+  box-shadow: 0 0 20px rgba(92, 224, 184, 0.15);
+}
+.glow-blue {
+  box-shadow: 0 0 20px rgba(74, 158, 255, 0.15);
+}
+.glow-purple {
+  box-shadow: 0 0 20px rgba(180, 142, 255, 0.15);
+}
