@@ -39,19 +39,26 @@ export function ProgressBar({
     <div className={className}>
       {(label || showValue) && (
         <div className="flex justify-between items-center mb-2 text-sm">
-          {label && <span className="text-text-secondary">{label}</span>}
+          {label && <span className="text-text-secondary font-medium">{label}</span>}
           {showValue && (
-            <span className="text-text-primary font-medium">
+            <span className="text-text-primary font-medium tabular-nums">
               €{value.toLocaleString("fr-FR", { minimumFractionDigits: 0 })} / €{max.toLocaleString("fr-FR")}
             </span>
           )}
         </div>
       )}
-      <div className="h-2.5 bg-navy-600 rounded-full overflow-hidden">
+      <div
+        className="h-2.5 bg-navy-600 rounded-full overflow-hidden"
+        role="progressbar"
+        aria-valuenow={Math.round(value)}
+        aria-valuemin={0}
+        aria-valuemax={max}
+        aria-label={label || "Progress"}
+      >
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
-          transition={{ duration: 1, ease: "easeOut" }}
+          transition={{ duration: 1, ease: [0.34, 1.56, 0.64, 1] }}
           className={`h-full rounded-full ${colorStyles[color]} ${glow ? glowStyles[color] : ""}`}
         />
       </div>

@@ -51,7 +51,7 @@ export function AnimatedNumber({
       initial={{ opacity: 0, scale: 0.8 }}
       animate={isInView ? { opacity: 1, scale: 1 } : {}}
       transition={{ duration: 0.5 }}
-      className={className}
+      className={`tabular-nums ${className}`}
     >
       {prefix}
       {displayValue.toLocaleString("fr-FR", {

@@ -61,3 +61,49 @@ html, body {
 .glow-purple {
   box-shadow: 0 0 20px rgba(180, 142, 255, 0.15);
 }
+
+/* Accessibility: focus indicators */
+:focus-visible {
+  outline: 2px solid #4a9eff;
+  outline-offset: 2px;
+}
+
+/* Accessibility: reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .page-transition {
+    animation: none;
+  }
+}
+
+/* Tabular numerals for financial data */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #0f1f38 25%, #152a4a 50%, #0f1f38 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 12px;
+}
+
+/* Bottom nav gradient fade */
+.nav-fade {
+  background: linear-gradient(to bottom, transparent, #060e1a);
+}
+
+/* Overscroll containment */
+.overscroll-contain {
+  overscroll-behavior-y: contain;
+}

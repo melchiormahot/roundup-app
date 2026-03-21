@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ReactNode } from "react";
+import { ReactNode, KeyboardEvent } from "react";
 
 interface CardProps {
   children: ReactNode;
@@ -13,14 +13,26 @@ interface CardProps {
 
 export function Card({ children, className = "", onClick, glow, delay = 0 }: CardProps) {
   const glowClass = glow ? `glow-${glow}` : "";
+  const interactive = !!onClick;
+
+  function handleKeyDown(e: KeyboardEvent) {
+    if (interactive && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      onClick?.();
+    }
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay, ease: "easeOut" }}
       onClick={onClick}
-      className={`bg-navy-700 border border-navy-600 rounded-[16px] p-5 ${glowClass} ${
-        onClick ? "cursor-pointer active:scale-[0.98] transition-transform" : ""
+      role={interactive ? "button" : undefined}
+      tabIndex={interactive ? 0 : undefined}
+      onKeyDown={interactive ? handleKeyDown : undefined}
+      className={`bg-navy-700 border border-[#1f4070] rounded-[16px] p-5 ${glowClass} ${
+        interactive ? "cursor-pointer active:scale-[0.98] transition-transform" : ""
       } ${className}`}
     >
       {children}

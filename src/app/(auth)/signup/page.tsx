@@ -55,7 +55,7 @@ export default function SignUpPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full px-4 py-3 bg-navy-700 border border-navy-600 rounded-xl text-text-primary placeholder:text-text-secondary/50 focus:outline-none focus:border-accent-blue transition-colors"
+              className="w-full px-4 py-3 bg-navy-700 border border-navy-600 rounded-xl text-text-primary placeholder:text-[#5a7da8] focus:outline-none focus:border-accent-blue transition-colors"
               placeholder="Alex"
             />
           </div>
@@ -66,7 +66,7 @@ export default function SignUpPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 bg-navy-700 border border-navy-600 rounded-xl text-text-primary placeholder:text-text-secondary/50 focus:outline-none focus:border-accent-blue transition-colors"
+              className="w-full px-4 py-3 bg-navy-700 border border-navy-600 rounded-xl text-text-primary placeholder:text-[#5a7da8] focus:outline-none focus:border-accent-blue transition-colors"
               placeholder="you@email.com"
             />
           </div>
@@ -78,7 +78,7 @@ export default function SignUpPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full px-4 py-3 bg-navy-700 border border-navy-600 rounded-xl text-text-primary placeholder:text-text-secondary/50 focus:outline-none focus:border-accent-blue transition-colors"
+              className="w-full px-4 py-3 bg-navy-700 border border-navy-600 rounded-xl text-text-primary placeholder:text-[#5a7da8] focus:outline-none focus:border-accent-blue transition-colors"
               placeholder="At least 6 characters"
             />
           </div>

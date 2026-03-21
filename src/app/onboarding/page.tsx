@@ -388,7 +388,7 @@ export default function OnboardingPage() {
                         )}
                         <span className="text-2xl">{c.icon}</span>
                         <span className="text-text-primary text-xs font-medium text-center">{c.name}</span>
-                        <span className="text-text-secondary text-[10px]">{c.taxRate}% tax credit</span>
+                        <span className="text-text-secondary text-xs">{c.taxRate}% tax credit</span>
                       </button>
                     );
                   })}

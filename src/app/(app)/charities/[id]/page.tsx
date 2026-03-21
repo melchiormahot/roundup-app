@@ -69,7 +69,7 @@ export default function CharityDetailPage({ params }: { params: Promise<{ id: st
       {/* Back button */}
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-1 text-text-secondary text-sm mb-6 hover:text-text-primary transition-colors"
+        className="flex items-center gap-1 p-2 -ml-2 text-text-secondary text-sm mb-4 hover:text-text-primary transition-colors min-h-[44px]"
       >
         <ChevronLeft className="w-4 h-4" />
         Back
@@ -139,14 +139,18 @@ export default function CharityDetailPage({ params }: { params: Promise<{ id: st
             step={5}
             value={allocation}
             onChange={(e) => setAllocation(Number(e.target.value))}
+            aria-label="Allocation percentage"
+            aria-valuetext={`${allocation}%`}
             className="w-full h-2 bg-navy-600 rounded-full appearance-none cursor-pointer
               [&::-webkit-slider-thumb]:appearance-none
-              [&::-webkit-slider-thumb]:w-6
-              [&::-webkit-slider-thumb]:h-6
+              [&::-webkit-slider-thumb]:w-11
+              [&::-webkit-slider-thumb]:h-11
               [&::-webkit-slider-thumb]:bg-accent-blue
               [&::-webkit-slider-thumb]:rounded-full
               [&::-webkit-slider-thumb]:shadow-lg
-              [&::-webkit-slider-thumb]:cursor-pointer"
+              [&::-webkit-slider-thumb]:cursor-pointer
+              [&::-webkit-slider-thumb]:border-4
+              [&::-webkit-slider-thumb]:border-navy-700"
           />
           <Button fullWidth onClick={handleSave} disabled={saving}>
             {saving ? "Saving..." : "Save Allocation"}

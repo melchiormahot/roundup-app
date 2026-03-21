@@ -4,6 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "RoundUp",
   description: "Give effortlessly. Save on taxes.",
+  viewport: "width=device-width, initial-scale=1, viewport-fit=cover",
 };
 
 export default function RootLayout({

@@ -92,7 +92,7 @@ export default function SettingsPage() {
       <Card delay={0.2} className="mb-4">
         <h3 className="text-text-primary font-semibold mb-3">Banking</h3>
         <div className="space-y-3">
-          <div className="flex items-center gap-3 p-3 bg-navy-800 rounded-xl">
+          <div className="flex items-center gap-3 p-3 bg-navy-600/20 rounded-xl">
             <Building2 className="w-5 h-5 text-accent-blue" />
             <div className="flex-1">
               <p className="text-text-primary text-sm">Bank connection</p>
@@ -103,7 +103,7 @@ export default function SettingsPage() {
               Connected
             </div>
           </div>
-          <div className="flex items-center gap-3 p-3 bg-navy-800 rounded-xl">
+          <div className="flex items-center gap-3 p-3 bg-navy-600/20 rounded-xl">
             <FileCheck2 className="w-5 h-5 text-accent-blue" />
             <div className="flex-1">
               <p className="text-text-primary text-sm">SEPA mandate</p>
@@ -149,12 +149,12 @@ export default function SettingsPage() {
         <h3 className="text-text-primary font-semibold mb-2">Referral code</h3>
         <p className="text-text-secondary text-xs mb-3">Share your code and earn bonus round ups</p>
         <div className="flex items-center gap-2">
-          <div className="flex-1 bg-navy-800 rounded-xl px-4 py-3 text-text-primary font-mono text-sm">
+          <div className="flex-1 bg-navy-600/20 rounded-xl px-4 py-3 text-text-primary font-mono text-sm">
             {user.referralCode}
           </div>
           <button
             onClick={copyReferral}
-            className="p-3 bg-navy-800 rounded-xl text-text-secondary hover:text-accent-blue transition-colors"
+            className="p-3 bg-navy-600/20 rounded-xl text-text-secondary hover:text-accent-blue transition-colors"
           >
             <Copy className="w-5 h-5" />
           </button>

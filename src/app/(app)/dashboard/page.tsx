@@ -118,11 +118,11 @@ export default function DashboardPage() {
                   MSF and Secours Populaire are mobilising. Redirect your round ups?
                 </p>
                 <div className="flex gap-2">
-                  <button className="text-xs text-accent-red font-medium hover:underline">
+                  <button className="text-xs text-accent-red font-medium hover:underline min-h-[44px] px-2 -ml-2 flex items-center">
                     Redirect now
                   </button>
                   <button
-                    className="text-xs text-text-secondary hover:underline"
+                    className="text-xs text-text-secondary hover:underline min-h-[44px] px-2 flex items-center"
                     onClick={() => setCrisisBanner(false)}
                   >
                     Dismiss
@@ -152,7 +152,7 @@ export default function DashboardPage() {
         </div>
         <button
           onClick={() => setTxExpanded(!txExpanded)}
-          className="flex items-center gap-1 text-accent-blue text-xs font-medium"
+          className="flex items-center gap-1 text-accent-blue text-xs font-medium min-h-[44px]"
         >
           {txExpanded ? "Hide" : "Show"} transactions
           {txExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
@@ -193,7 +193,7 @@ export default function DashboardPage() {
                   <span>€{a.amountDonated.toFixed(2)}</span>
                 </div>
               </div>
-              <Badge variant={a.taxRate === 75 ? "green" : "purple"} className="text-[10px]">
+              <Badge variant={a.taxRate === 75 ? "green" : "purple"} className="text-xs">
                 {a.taxRate}%
               </Badge>
             </div>
@@ -207,7 +207,7 @@ export default function DashboardPage() {
         <p className="text-text-primary font-semibold mb-2">
           €{data.ytdTotal.toFixed(0)} donated this year
         </p>
-        <button className="inline-flex items-center gap-1.5 text-accent-blue text-xs font-medium">
+        <button className="inline-flex items-center gap-1.5 text-accent-blue text-xs font-medium min-h-[44px] px-3">
           <Share2 className="w-3.5 h-3.5" />
           Share your impact
         </button>

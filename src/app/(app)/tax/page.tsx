@@ -145,7 +145,7 @@ export default function TaxPage() {
             { name: "Tax Calculation", desc: "Deduction amounts by rate, ceiling tracking", action: () => downloadPdf("tax"), key: "tax" },
             { name: "CERFA 11580", desc: "Official French tax receipt (coming soon)", action: null, key: "cerfa" },
           ].map((doc) => (
-            <div key={doc.key} className="flex items-center gap-3 p-3 bg-navy-800 rounded-xl">
+            <div key={doc.key} className="flex items-center gap-3 p-3 bg-navy-600/20 rounded-xl">
               <FileText className="w-5 h-5 text-accent-blue shrink-0" />
               <div className="flex-1">
                 <p className="text-text-primary text-sm font-medium">{doc.name}</p>
@@ -154,7 +154,7 @@ export default function TaxPage() {
               <button
                 onClick={doc.action || undefined}
                 disabled={!doc.action || pdfLoading === doc.key}
-                className={`p-2 transition-colors ${doc.action ? "text-text-secondary hover:text-accent-blue" : "text-navy-600 cursor-not-allowed"}`}
+                className={`p-3 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors ${doc.action ? "text-text-secondary hover:text-accent-blue" : "text-navy-600 cursor-not-allowed"}`}
               >
                 {pdfLoading === doc.key ? (
                   <Loader2 className="w-4 h-4 animate-spin" />

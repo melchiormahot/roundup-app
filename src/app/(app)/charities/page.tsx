@@ -52,7 +52,7 @@ export default function CharitiesPage() {
           <button
             key={cat.value}
             onClick={() => setFilter(cat.value)}
-            className={`px-4 py-2 rounded-[20px] text-sm font-medium whitespace-nowrap transition-all ${
+            className={`px-4 py-2.5 min-h-[44px] rounded-[20px] text-sm font-medium whitespace-nowrap transition-all ${
               filter === cat.value
                 ? "bg-accent-blue text-white"
                 : "bg-navy-700 text-text-secondary hover:text-text-primary border border-navy-600"
@@ -78,12 +78,12 @@ export default function CharitiesPage() {
                 <p className="text-text-secondary text-xs mb-2 line-clamp-2">{charity.description}</p>
                 <div className="flex items-center gap-2 flex-wrap">
                   {charity.qualityLabel && (
-                    <Badge variant="green" className="text-[10px]">
+                    <Badge variant="green" className="text-xs">
                       <ShieldCheck className="w-3 h-3 mr-1" />
                       {charity.qualityLabel}
                     </Badge>
                   )}
-                  <Badge variant={charity.taxRate === 75 ? "orange" : "purple"} className="text-[10px]">
+                  <Badge variant={charity.taxRate === 75 ? "orange" : "purple"} className="text-xs">
                     {charity.taxRate}% tax credit
                   </Badge>
                 </div>
