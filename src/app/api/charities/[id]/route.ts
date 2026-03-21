@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { userCharities } from "@/db/schema";
+import { userCharities, roundups, charities as charitiesTable } from "@/db/schema";
 import { getSession } from "@/lib/session";
 import { eq, and } from "drizzle-orm";
 
@@ -22,9 +22,28 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     }).sync();
   }
 
+  // Calculate donated amount for impact calculator
+  let donatedAmount = 0;
+  if (session.isLoggedIn && session.userId && allocation) {
+    const yearStart = new Date(new Date().getFullYear(), 0, 1).toISOString();
+    const allRoundups = db.select().from(roundups).where(eq(roundups.userId, session.userId)).all().filter(r => r.timestamp >= yearStart);
+    const ytdTotal = allRoundups.reduce((s, r) => s + r.roundupAmount, 0);
+
+    const allAllocs = db.select().from(userCharities).where(eq(userCharities.userId, session.userId)).all();
+    const totalPct = allAllocs.reduce((s, a) => s + a.allocationPct, 0);
+    donatedAmount = totalPct > 0 ? +(ytdTotal * (allocation.allocationPct / totalPct)).toFixed(2) : 0;
+  }
+
   return NextResponse.json({
-    charity: { ...charity, impact: JSON.parse(charity.impact) },
+    charity: {
+      ...charity,
+      impact: JSON.parse(charity.impact),
+      howMoneyHelps: charity.howMoneyHelps ? JSON.parse(charity.howMoneyHelps) : [],
+      milestones: charity.milestones ? JSON.parse(charity.milestones) : [],
+      financialBreakdown: charity.financialBreakdown ? JSON.parse(charity.financialBreakdown) : null,
+    },
     allocation: allocation?.allocationPct ?? 0,
+    donatedAmount,
   });
 }
 

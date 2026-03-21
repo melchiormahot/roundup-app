@@ -129,8 +129,12 @@ export async function GET() {
   };
   const impactStatement = topCharity ? (impactStatements[topCharity.charityName] || `Your donations are making a difference`) : null;
 
+  // Check if user donates to Restos du Coeur (for Coluche story card)
+  const donatesToRestos = charityAllocations.some((a) => a.charityName === "Restos du Cœur" && a.amountDonated > 0);
+
   return NextResponse.json({
     userName: session.name,
+    donatesToRestos,
     ytdTotal: +ytdTotal.toFixed(2),
     taxSaving: +taxSaving.toFixed(2),
     enhancedCeiling,

@@ -21,6 +21,7 @@ interface DashboardData {
   dailyTotals: number[];
   givingStreak: number;
   impactStatement: string | null;
+  donatesToRestos: boolean;
   nextDebitDate: string;
   weekTransactions: {
     id: string;
@@ -74,6 +75,7 @@ export default function DashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [txExpanded, setTxExpanded] = useState(false);
   const [crisisBanner, setCrisisBanner] = useState(true);
+  const [colucheCard, setColucheCard] = useState(true);
 
   useEffect(() => {
     fetch("/api/dashboard")
@@ -113,6 +115,26 @@ export default function DashboardPage() {
           <p className="text-xs text-text-secondary font-medium mb-1">Your impact this month</p>
           <p className="text-text-primary text-sm font-semibold">{data.impactStatement}</p>
         </Card>
+      )}
+
+      {/* Coluche Story Card (appears when user donates to Restos du Coeur) */}
+      {data.donatesToRestos && colucheCard && (
+        <AnimatePresence>
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="mb-4">
+            <Card className="border-accent-yellow/20 bg-accent-yellow/5" delay={0.08}>
+              <div className="flex items-start justify-between mb-2">
+                <p className="text-accent-yellow text-xs font-bold">DID YOU KNOW?</p>
+                <button onClick={() => setColucheCard(false)} className="text-text-secondary text-xs hover:text-text-primary min-h-[24px] px-1">Dismiss</button>
+              </div>
+              <p className="text-text-secondary text-sm font-medium leading-relaxed mb-2">
+                The 75% tax deduction you receive? It exists because of Coluche, the comedian who founded Restos du Cœur in 1985. He fought for a law that would make giving to people in need as rewarding as possible. Every time you donate to Restos through RoundUp, you are part of his legacy.
+              </p>
+              <p className="text-text-secondary/60 text-xs italic font-medium">
+                "Je fais appel à la bonté. La loi Coluche, c'est la reconnaissance que la générosité mérite d'être encouragée."
+              </p>
+            </Card>
+          </motion.div>
+        </AnimatePresence>
       )}
 
       {/* Social Proof */}

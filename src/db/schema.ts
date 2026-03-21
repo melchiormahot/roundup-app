@@ -24,6 +24,11 @@ export const charities = sqliteTable("charities", {
   mission: text("mission").notNull(),
   impact: text("impact").notNull(), // JSON array of strings
   crisisEligible: integer("crisis_eligible", { mode: "boolean" }).notNull().default(false),
+  foundingStory: text("founding_story"),
+  howMoneyHelps: text("how_money_helps"), // JSON array of {amount, description}
+  milestones: text("milestones"), // JSON array of {year, title, description}
+  financialBreakdown: text("financial_breakdown"), // JSON {programs, admin, fundraising}
+  fundraisingEfficiency: text("fundraising_efficiency"),
 });
 
 export const userCharities = sqliteTable("user_charities", {
