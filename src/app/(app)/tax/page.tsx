@@ -5,7 +5,8 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
-import { FileText, Download, TrendingUp } from "lucide-react";
+import { FileText, Download, TrendingUp, Loader2 } from "lucide-react";
+import { usePdfDownload } from "@/components/TaxPdf";
 
 interface TaxData {
   totalTaxSaving: number;
@@ -36,6 +37,7 @@ const BRACKETS = ["Under €30k", "€30k to €60k", "€60k to €100k", "€1
 
 export default function TaxPage() {
   const [data, setData] = useState<TaxData | null>(null);
+  const { downloadPdf, loading: pdfLoading } = usePdfDownload();
 
   useEffect(() => {
     fetch("/api/tax")
@@ -139,18 +141,26 @@ export default function TaxPage() {
         <h3 className="text-text-primary font-semibold mb-3">Tax Package</h3>
         <div className="space-y-3">
           {[
-            { name: "Year End Summary", desc: "Total per charity, monthly breakdown" },
-            { name: "Tax Calculation", desc: "Deduction amounts by rate, ceiling tracking" },
-            { name: "CERFA 11580", desc: "Official French tax receipt" },
-          ].map((doc, i) => (
-            <div key={i} className="flex items-center gap-3 p-3 bg-navy-800 rounded-xl">
+            { name: "Year End Summary", desc: "Total per charity, monthly breakdown", action: () => downloadPdf("summary"), key: "summary" },
+            { name: "Tax Calculation", desc: "Deduction amounts by rate, ceiling tracking", action: () => downloadPdf("tax"), key: "tax" },
+            { name: "CERFA 11580", desc: "Official French tax receipt (coming soon)", action: null, key: "cerfa" },
+          ].map((doc) => (
+            <div key={doc.key} className="flex items-center gap-3 p-3 bg-navy-800 rounded-xl">
               <FileText className="w-5 h-5 text-accent-blue shrink-0" />
               <div className="flex-1">
                 <p className="text-text-primary text-sm font-medium">{doc.name}</p>
                 <p className="text-text-secondary text-xs">{doc.desc}</p>
               </div>
-              <button className="p-2 text-text-secondary hover:text-accent-blue transition-colors">
-                <Download className="w-4 h-4" />
+              <button
+                onClick={doc.action || undefined}
+                disabled={!doc.action || pdfLoading === doc.key}
+                className={`p-2 transition-colors ${doc.action ? "text-text-secondary hover:text-accent-blue" : "text-navy-600 cursor-not-allowed"}`}
+              >
+                {pdfLoading === doc.key ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Download className="w-4 h-4" />
+                )}
               </button>
             </div>
           ))}

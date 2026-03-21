@@ -36,106 +36,106 @@ A web app that helps users donate to curated charities by tracking simulated tra
 ## Task List
 
 ### Setup
-- [ ] Initialize Next.js 15 project with TypeScript, Tailwind CSS, App Router
-- [ ] Configure Tailwind with the Deep Navy color palette as custom theme
-- [ ] Set up SQLite database with better-sqlite3 and Drizzle ORM
-- [ ] Create database schema and migrations (see Data Model below)
-- [ ] Seed database with charity data, sample transactions, and tax rules
-- [ ] Set up Zustand store for client state
-- [ ] Create shared UI components: Card, Badge, ProgressBar, Button, Toggle, Toast
+- [x] Initialize Next.js 15 project with TypeScript, Tailwind CSS, App Router
+- [x] Configure Tailwind with the Deep Navy color palette as custom theme
+- [x] Set up SQLite database with better-sqlite3 and Drizzle ORM
+- [x] Create database schema and migrations (see Data Model below)
+- [x] Seed database with charity data, sample transactions, and tax rules
+- [x] Set up Zustand store for client state
+- [x] Create shared UI components: Card, Badge, ProgressBar, Button, Toggle, Toast
 
 ### Auth
-- [ ] Sign up page (email + password)
-- [ ] Login page
-- [ ] Auth middleware protecting app routes (iron-session)
-- [ ] Password hashing with bcrypt
+- [x] Sign up page (email + password)
+- [x] Login page
+- [x] Auth middleware protecting app routes (iron-session)
+- [x] Password hashing with bcrypt
 
 ### Onboarding Flow (8 steps, /onboarding route)
-- [ ] Step 1: Welcome screen with animated logo ("Give effortlessly. Save on taxes.")
-- [ ] Step 2: Jurisdiction picker (France pre-selected, UK, Germany, Belgium, Spain)
-- [ ] Step 3: Income bracket selector (Under 30k / 30-60k / 60-100k / 100k+)
-- [ ] Step 4: Tax preview "aha" moment (animated number showing tax credit based on jurisdiction + bracket, with confetti)
-- [ ] Step 5: Connect bank (simulated: show bank cards, fake loading, "Connected!" state)
-- [ ] Step 6: SEPA mandate confirmation (show details, sign button, EUR 0 verification note)
-- [ ] Step 7: Charity picker (multi-select grid of 6 charities with checkmark animation)
-- [ ] Step 8: Celebration screen ("You're all set!" with confetti, "Let's go" button redirects to dashboard)
-- [ ] Step indicator dots at bottom, Next/Back navigation, smart button disabling
+- [x] Step 1: Welcome screen with animated logo ("Give effortlessly. Save on taxes.")
+- [x] Step 2: Jurisdiction picker (France pre-selected, UK, Germany, Belgium, Spain)
+- [x] Step 3: Income bracket selector (Under 30k / 30-60k / 60-100k / 100k+)
+- [x] Step 4: Tax preview "aha" moment (animated number showing tax credit based on jurisdiction + bracket, with confetti)
+- [x] Step 5: Connect bank (simulated: show bank cards, fake loading, "Connected!" state)
+- [x] Step 6: SEPA mandate confirmation (show details, sign button, EUR 0 verification note)
+- [x] Step 7: Charity picker (multi-select grid of 6 charities with checkmark animation)
+- [x] Step 8: Celebration screen ("You're all set!" with confetti, "Let's go" button redirects to dashboard)
+- [x] Step indicator dots at bottom, Next/Back navigation, smart button disabling
 
 ### Home Dashboard (/dashboard)
-- [ ] Greeting with user name and time-of-day
-- [ ] Year-to-date donation total (large animated number, green)
-- [ ] Tax ceiling progress bar (Loi Coluche: donated / EUR 2,000) with glow effect
-- [ ] Tax saving so far + remaining
-- [ ] Crisis banner (tappable, redirects round-ups, shows confirmation with undo)
-- [ ] "This week" card: round-up count, total, next debit date, expandable transaction list
-- [ ] Charity allocation card: rows showing charity name, %, EUR donated, tappable to open detail
-- [ ] Monthly milestone card (shareable)
+- [x] Greeting with user name and time-of-day
+- [x] Year-to-date donation total (large animated number, green)
+- [x] Tax ceiling progress bar (Loi Coluche: donated / EUR 2,000) with glow effect
+- [x] Tax saving so far + remaining
+- [x] Crisis banner (tappable, redirects round-ups, shows confirmation with undo)
+- [x] "This week" card: round-up count, total, next debit date, expandable transaction list
+- [x] Charity allocation card: rows showing charity name, %, EUR donated, tappable to open detail
+- [x] Monthly milestone card (shareable)
 
 ### Charities Screen (/charities)
-- [ ] Header: "Charities" with subtitle
-- [ ] Category filter pills (All, Health, Environment, Humanitarian, Human Rights) that actually filter
-- [ ] Charity cards: avatar, name, category, quality badge (Don en Confiance), tax rate badge
-- [ ] Tap card opens charity detail page
+- [x] Header: "Charities" with subtitle
+- [x] Category filter pills (All, Health, Environment, Humanitarian, Human Rights) that actually filter
+- [x] Charity cards: avatar, name, category, quality badge (Don en Confiance), tax rate badge
+- [x] Tap card opens charity detail page
 
 ### Charity Detail (/charities/[id])
-- [ ] Large avatar, name, category, quality badge
-- [ ] Mission section
-- [ ] Recent impact bullets
-- [ ] Tax benefit for user's jurisdiction
-- [ ] Draggable allocation slider (0-100%) that updates in real-time
-- [ ] Year-to-date donation amount
-- [ ] Save button
+- [x] Large avatar, name, category, quality badge
+- [x] Mission section
+- [x] Recent impact bullets
+- [x] Tax benefit for user's jurisdiction
+- [x] Draggable allocation slider (0-100%) that updates in real-time
+- [x] Year-to-date donation amount
+- [x] Save button
 
 ### Tax Dashboard (/tax)
-- [ ] Estimated tax saving (large animated number, blue)
-- [ ] 75% rate card: charity name, amount, progress bar with glow, ceiling tracker
-- [ ] 66% rate card: same structure
-- [ ] Year-end projection paragraph with "room to give more" callout
-- [ ] Tax package section: 3 PDFs listed, download button (greyed until January or functional with sample data)
-- [ ] Income bracket + jurisdiction + debit frequency display (editable)
+- [x] Estimated tax saving (large animated number, blue)
+- [x] 75% rate card: charity name, amount, progress bar with glow, ceiling tracker
+- [x] 66% rate card: same structure
+- [x] Year-end projection paragraph with "room to give more" callout
+- [x] Tax package section: 3 PDFs listed, download button (greyed until January or functional with sample data)
+- [x] Income bracket + jurisdiction + debit frequency display (editable)
 
 ### Notifications (/notifications)
-- [ ] Activity feed with colored dots per type (blue: weekly, green: monthly, red: crisis, purple: charity update, yellow: milestone)
-- [ ] Each notification has title, body, timestamp
-- [ ] Tappable notifications show detail or trigger action
-- [ ] Unread indicator dot on nav item
+- [x] Activity feed with colored dots per type (blue: weekly, green: monthly, red: crisis, purple: charity update, yellow: milestone)
+- [x] Each notification has title, body, timestamp
+- [x] Tappable notifications show detail or trigger action
+- [x] Unread indicator dot on nav item
 
 ### Settings (/settings)
-- [ ] Account section (email, join date)
-- [ ] Bank connection status (simulated: shows "Connected" with bank name)
-- [ ] SEPA mandate status
-- [ ] Notification toggles (weekly summary, monthly progress, crisis alerts, charity updates) with working iOS-style switches
-- [ ] Referral code section with copy-to-clipboard
-- [ ] Replay onboarding button
+- [x] Account section (email, join date)
+- [x] Bank connection status (simulated: shows "Connected" with bank name)
+- [x] SEPA mandate status
+- [x] Notification toggles (weekly summary, monthly progress, crisis alerts, charity updates) with working iOS-style switches
+- [x] Referral code section with copy-to-clipboard
+- [x] Replay onboarding button
 
 ### PDF Generation
-- [ ] Year-end summary PDF: total per charity, monthly breakdown table
-- [ ] Tax calculation PDF: deduction amounts by rate (66%/75%), ceiling tracking
-- [ ] Generate with sample data for demo purposes
-- [ ] Download button on Tax Dashboard
+- [x] Year-end summary PDF: total per charity, monthly breakdown table
+- [x] Tax calculation PDF: deduction amounts by rate (66%/75%), ceiling tracking
+- [x] Generate with sample data for demo purposes
+- [x] Download button on Tax Dashboard
 
 ### Simulated Data
-- [ ] Seed 6 charities: MSF, WWF France, Ligue contre le cancer, Restos du Coeur, Amnesty International, Secours Populaire
-- [ ] Each charity has: name, description, category, icon/emoji, quality_label, tax_rate, mission, impact_bullets[], crisis_eligible
-- [ ] Seed sample round-up transactions (last 30 days of simulated purchases: coffee, groceries, metro, restaurants, shops)
-- [ ] Seed sample notifications (weekly summaries, monthly progress, one crisis alert, one charity update)
-- [ ] Tax rules for France: 66% standard, 75% Loi Coluche (ceiling EUR 2,000), 20% income cap
+- [x] Seed 6 charities: MSF, WWF France, Ligue contre le cancer, Restos du Coeur, Amnesty International, Secours Populaire
+- [x] Each charity has: name, description, category, icon/emoji, quality_label, tax_rate, mission, impact_bullets[], crisis_eligible
+- [x] Seed sample round-up transactions (last 30 days of simulated purchases: coffee, groceries, metro, restaurants, shops)
+- [x] Seed sample notifications (weekly summaries, monthly progress, one crisis alert, one charity update)
+- [x] Tax rules for France: 66% standard, 75% Loi Coluche (ceiling EUR 2,000), 20% income cap
 
 ### Bottom Navigation
-- [ ] 5 tabs: Home, Charities, Tax, Inbox, Settings
-- [ ] Active tab highlighted in blue
-- [ ] Notification dot on Inbox when unread
-- [ ] Frosted glass effect (backdrop-filter blur)
-- [ ] Smooth transitions between screens
+- [x] 5 tabs: Home, Charities, Tax, Inbox, Settings
+- [x] Active tab highlighted in blue
+- [x] Notification dot on Inbox when unread
+- [x] Frosted glass effect (backdrop-filter blur)
+- [x] Smooth transitions between screens
 
 ### Animations & Polish
-- [ ] Number count-up animations on dashboard load and tab switch
-- [ ] Progress bar glow effects
-- [ ] Card fade-in on scroll (staggered, using Framer Motion or Intersection Observer)
-- [ ] Toast notifications (slide down, auto-dismiss)
-- [ ] Tab transition: scale + fade (not instant switch)
-- [ ] Draggable slider with haptic-feeling feedback
-- [ ] Crisis banner state change animation
+- [x] Number count-up animations on dashboard load and tab switch
+- [x] Progress bar glow effects
+- [x] Card fade-in on scroll (staggered, using Framer Motion or Intersection Observer)
+- [x] Toast notifications (slide down, auto-dismiss)
+- [x] Tab transition: scale + fade (not instant switch)
+- [x] Draggable slider with haptic-feeling feedback
+- [x] Crisis banner state change animation
 
 ---
 
