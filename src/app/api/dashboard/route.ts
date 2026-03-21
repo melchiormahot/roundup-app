@@ -72,6 +72,63 @@ export async function GET() {
     Math.min(enhancedTotal, enhancedCeiling) * 0.75 +
     standardTotal * 0.66;
 
+  // Last week total for delta
+  const lastWeekStart = new Date(weekStart);
+  lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+  const lastWeekRoundups = allRoundups.filter(
+    (r) => r.timestamp >= lastWeekStart.toISOString() && r.timestamp < weekStart.toISOString()
+  );
+  const lastWeekTotal = lastWeekRoundups.reduce((sum, r) => sum + r.roundupAmount, 0);
+  const weekDelta = +(weekTotal - lastWeekTotal).toFixed(2);
+
+  // Daily breakdown for sparkline (7 days)
+  const dailyTotals: number[] = [];
+  for (let d = 6; d >= 0; d--) {
+    const dayStart = new Date(weekStart);
+    dayStart.setDate(weekStart.getDate() + (6 - d) - 6 + new Date().getDay());
+    const start = new Date();
+    start.setDate(start.getDate() - d);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(start);
+    end.setDate(end.getDate() + 1);
+    const dayTotal = allRoundups
+      .filter((r) => r.timestamp >= start.toISOString() && r.timestamp < end.toISOString())
+      .reduce((sum, r) => sum + r.roundupAmount, 0);
+    dailyTotals.push(+dayTotal.toFixed(2));
+  }
+
+  // Giving streak (consecutive weeks with roundups)
+  let streak = 0;
+  const checkDate = new Date();
+  while (true) {
+    const wkStart = new Date(checkDate);
+    wkStart.setDate(wkStart.getDate() - wkStart.getDay() - streak * 7);
+    wkStart.setHours(0, 0, 0, 0);
+    const wkEnd = new Date(wkStart);
+    wkEnd.setDate(wkEnd.getDate() + 7);
+    const hasRoundups = allRoundups.some(
+      (r) => r.timestamp >= wkStart.toISOString() && r.timestamp < wkEnd.toISOString()
+    );
+    if (hasRoundups) {
+      streak++;
+    } else {
+      break;
+    }
+    if (streak > 52) break;
+  }
+
+  // Impact statement based on top charity
+  const topCharity = charityAllocations.sort((a, b) => b.amountDonated - a.amountDonated)[0];
+  const impactStatements: Record<string, string> = {
+    "Médecins Sans Frontières": `Your €${topCharity?.amountDonated.toFixed(0) || 0} to MSF helped fund ${Math.max(1, Math.floor((topCharity?.amountDonated || 0) / 15))} emergency medical kits`,
+    "WWF France": `Your €${topCharity?.amountDonated.toFixed(0) || 0} to WWF helped protect ${Math.max(1, Math.floor((topCharity?.amountDonated || 0) / 5))} hectares of marine habitat`,
+    "Ligue contre le cancer": `Your €${topCharity?.amountDonated.toFixed(0) || 0} contributed to cancer research funding this year`,
+    "Restos du Cœur": `Your €${topCharity?.amountDonated.toFixed(0) || 0} to Restos du Cœur helped provide ${Math.max(1, Math.floor((topCharity?.amountDonated || 0) / 0.8))} meals`,
+    "Amnesty International": `Your €${topCharity?.amountDonated.toFixed(0) || 0} supported human rights investigations worldwide`,
+    "Secours Populaire": `Your €${topCharity?.amountDonated.toFixed(0) || 0} to Secours Populaire helped ${Math.max(1, Math.floor((topCharity?.amountDonated || 0) / 10))} people access essential support`,
+  };
+  const impactStatement = topCharity ? (impactStatements[topCharity.charityName] || `Your donations are making a difference`) : null;
+
   return NextResponse.json({
     userName: session.name,
     ytdTotal: +ytdTotal.toFixed(2),
@@ -80,6 +137,10 @@ export async function GET() {
     enhancedTotal: +enhancedTotal.toFixed(2),
     weekRoundupCount: weekRoundups.length,
     weekTotal: +weekTotal.toFixed(2),
+    weekDelta,
+    dailyTotals,
+    givingStreak: streak,
+    impactStatement,
     nextDebitDate: nextMonday.toISOString().split("T")[0],
     weekTransactions: weekRoundups.slice(0, 10).map((r) => ({
       id: r.id,
