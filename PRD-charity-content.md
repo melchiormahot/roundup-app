@@ -69,15 +69,72 @@ The app currently has placeholder charity descriptions. This PRD replaces all se
 - [ ] Update charity detail page to display the new sections: founding story below mission, "How your money helps" as a visual card with euro amounts
 - [ ] "How your money helps" should display as a clean card with 3 tiers showing increasing amounts and impact
 
+### Financial Transparency Section (NEW for each charity)
+- [ ] Add "Where your money goes" pie chart data to each charity: % to programs/operations, % to administration, % to fundraising
+- [ ] MSF: ~89% programs, ~6% admin, ~5% fundraising (verify from annual report)
+- [ ] WWF: ~82% programs, ~10% admin, ~8% fundraising (verify)
+- [ ] Ligue: ~78% programs, ~12% admin, ~10% fundraising (verify)
+- [ ] Restos du Coeur: ~92% programs, ~5% admin, ~3% fundraising (verify, heavily volunteer-run)
+- [ ] Amnesty: ~75% programs, ~14% admin, ~11% fundraising (verify)
+- [ ] Secours Populaire: ~88% programs, ~7% admin, ~5% fundraising (verify)
+- [ ] Display as a simple horizontal stacked bar with three colours: green (programs), blue (admin), orange (fundraising)
+- [ ] Add "fundraising_efficiency" field to charity schema
+- [ ] Show a one-line verdict below: "89 cents of every euro goes directly to saving lives" (per charity)
+
+### Key Achievements Timeline (NEW for each charity)
+- [ ] Add 4 to 5 milestone achievements per charity in chronological format:
+  - MSF: 1971 Founded, 1999 Nobel Prize, 2014 Ebola response (largest ever), 2020 COVID global response, 2024 11.2M patients
+  - WWF: 1961 Founded, 1986 Panda logo adopted globally, 2010 Earth Hour reaches 128 countries, 2020 Living Planet Report, 2024 1.2M hectares protected in France
+  - Ligue: 1918 Founded, 1956 First French cancer screening campaign, 2000 Tobacco control advocacy success, 2018 100 years celebrated, 2024 680 research projects
+  - Restos: 1985 Coluche founds Restos, 1988 Loi Coluche passed (75% tax deduction), 2005 100 millionth meal served, 2020 COVID meal distribution doubled, 2024 140M+ meals
+  - Amnesty: 1961 Founded (Peter Benenson's newspaper appeal), 1977 Nobel Peace Prize, 2001 Campaign against torture, 2017 Refugees Welcome campaign, 2024 157 countries investigated
+  - Secours: 1945 Founded post-liberation, 1985 First "Journée des Oubliés des Vacances", 2005 Tsunami response, 2015 Refugee welcome program, 2024 3.5M people helped
+- [ ] Display as a horizontal timeline on desktop, vertical on mobile
+- [ ] Add "milestones" field to charity schema: array of objects [{year, title, description}]
+
+### Charity Categories Page (NEW)
+- [ ] Create a `/charities/category/[slug]` route for each category
+- [ ] Category pages: Humanitarian, Health, Environment, Human Rights
+- [ ] Each category page has a hero with: category name, one-sentence description of why this category matters, how many charities are in it
+- [ ] Below: full charity cards for that category with all content visible (not just a preview)
+- [ ] "Why this matters" editorial paragraph per category:
+  - Humanitarian: "When people have nothing, a meal, a blanket, or a doctor can be the difference between despair and hope."
+  - Health: "Medical research moves slowly, costs dearly, and saves millions. Your spare change accelerates the cure."
+  - Environment: "The planet doesn't send invoices, but the costs are real. Conservation protects what we can't replace."
+  - Human Rights: "When someone is silenced, imprisoned, or persecuted, a voice on their side changes everything."
+
+### Impact Calculator (NEW)
+- [ ] Add an interactive "Your impact so far" section to each charity detail page
+- [ ] Takes the user's actual donated amount to this charity and translates it into tangible outcomes
+- [ ] Examples:
+  - MSF: "Your €99.12 has funded approximately 14 doses of oral rehydration salts and 2 days of malnutrition treatment"
+  - Restos: "Your €61.95 has provided approximately 248 meals to people in need"
+  - WWF: "Your €86.73 has helped protect approximately 17 hectares of forest for a month"
+- [ ] The calculation uses the "How your money helps" data, showing actual proportional impact
+- [ ] Updates dynamically as the user simulates more donations
+- [ ] Visual: an icon grid where each icon represents one unit of impact (one meal, one tree, one medical kit), filling in based on amount
+
 ### Iteration 1: Visual Presentation
 - [ ] "How your money helps" card should use a stepped visual: three rows with increasing euro amounts on the left, descriptions on the right, connected by a subtle vertical line
 - [ ] Add a subtle background gradient to each charity detail page that uses the charity's brand colour at very low opacity
 - [ ] The founding story should appear as a collapsible "Our story" section, expanded by default
 - [ ] Impact bullets should each have a small coloured dot matching the charity's brand colour
 
-### Iteration 2: Verification and Polish
+### Iteration 2: The Coluche Story (Special Feature)
+- [ ] The connection between Restos du Coeur's founder (Coluche) and the Loi Coluche (75% tax law) is the single most meaningful narrative in this app. Build a special "Did you know?" card that appears once on the dashboard after a user first donates to Restos du Coeur.
+- [ ] Card content: "The 75% tax deduction you just received? It exists because of Coluche, the comedian who founded Restos du Coeur in 1985. He fought for a law that would make giving to people in need as rewarding as possible. Every time you donate to Restos through RoundUp, you're part of his legacy."
+- [ ] This card should feel editorial, not promotional. It's a moment of connection.
+- [ ] Add a subtle Coluche reference in the Restos du Coeur profile: not his photo, but a quote. "Je fais appel à la bonté. La loi Coluche, c'est la reconnaissance que la générosité mérite d'être encouragée."
+- [ ] Dismissable but memorable
+
+### Iteration 3: Verification and Polish
 - [ ] Cross-check all numbers against official charity annual reports or websites
 - [ ] Ensure no copy reads like it was written by AI: natural, editorial tone
 - [ ] Read each profile aloud: does it flow? Would you share it with a friend?
 - [ ] Verify all Don en Confiance labels are accurate (check donenconfiance.org)
-- [ ] Commit with message "Real charity content with verified data"
+- [ ] Verify all "How your money helps" figures are plausible (not invented)
+- [ ] Verify financial transparency percentages match latest published data
+- [ ] Test the impact calculator with sample amounts: do the numbers make sense?
+- [ ] Test the milestone timeline on mobile: does it read well vertically?
+- [ ] Ensure every charity profile makes you think "I want to support this"
+- [ ] Commit with message "Real charity content with verified data and impact features"
