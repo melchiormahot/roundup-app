@@ -3,7 +3,7 @@ import { Toast } from "@/components/ui/Toast";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-navy-900 pb-20">
+    <div className="min-h-screen bg-navy-900 pb-24 overscroll-contain">
       <Toast />
       {children}
       <BottomNav />

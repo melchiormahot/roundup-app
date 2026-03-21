@@ -107,3 +107,11 @@ html, body {
 .overscroll-contain {
   overscroll-behavior-y: contain;
 }
+
+/* Type scale: consistent 8pt grid spacing */
+/* 48px: hero numbers, 24px: page titles, 18px: section headers, 15px: body, 13px: secondary, 12px: minimum labels */
+
+/* Ensure small text on dark backgrounds is readable */
+.text-xs {
+  font-weight: 500;
+}
