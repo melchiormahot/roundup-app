@@ -71,6 +71,16 @@ export const notifications = sqliteTable("notifications", {
   createdAt: text("created_at").notNull(),
 });
 
+export const simulationState = sqliteTable("simulation_state", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id).unique(),
+  currentDate: text("current_date").notNull(),
+  dayCount: integer("day_count").notNull().default(0),
+  enabled: integer("enabled", { mode: "boolean" }).notNull().default(false),
+  notificationStyle: text("notification_style").notNull().default("factual"),
+  seed: integer("seed").notNull().default(42),
+});
+
 export const jurisdictionTaxRules = sqliteTable("jurisdiction_tax_rules", {
   id: text("id").primaryKey(),
   countryCode: text("country_code").notNull().unique(),
