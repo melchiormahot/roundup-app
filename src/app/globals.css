@@ -1,196 +1,166 @@
 @import "tailwindcss";
 
-/* Theme variables: Warm Charcoal dark (default) and Warm Light */
-:root, [data-theme="dark"] {
-  --t-bg-primary: #121212;
-  --t-bg-secondary: #1c1917;
-  --t-bg-card: #231f1c;
-  --t-bg-card-inner: #2a2522;
-  --t-border: #33302b;
-  --t-border-subtle: #3d3833;
-  --t-text-primary: #e7e5e4;
-  --t-text-secondary: #a8a29e;
-  --t-text-dim: #78716c;
-  --t-accent-green: #86efac;
-  --t-accent-blue: #60a5fa;
-  --t-accent-purple: #c084fc;
-  --t-accent-red: #fca5a5;
-  --t-accent-yellow: #fbbf24;
-  --t-accent-orange: #fb923c;
-  --t-progress-track: #292524;
-  --t-nav-bg: rgba(28, 25, 23, 0.92);
-  --t-shadow: rgba(0, 0, 0, 0.4);
-  --t-card-shadow: none;
-  --t-card-border: 1px solid #33302b;
+/* ─── Warm Charcoal Design System ─────────────────────────────────── */
+
+/* Dark theme (default) */
+:root {
+  --bg-primary: #121212;
+  --bg-secondary: #1c1917;
+  --bg-card: #231f1c;
+  --bg-card-inner: #2a2522;
+  --border-primary: #33302b;
+  --border-secondary: #3d3833;
+  --text-primary: #e7e5e4;
+  --text-secondary: #a8a29e;
+  --text-dim: #78716c;
+  --accent-green: #86efac;
+  --accent-blue: #60a5fa;
+  --accent-purple: #c084fc;
+  --accent-red: #fca5a5;
+  --accent-yellow: #fbbf24;
+  --accent-orange: #fb923c;
+  --progress-track: #292524;
+  --nav-bg: rgba(28, 25, 23, 0.92);
+  --shadow: rgba(0, 0, 0, 0.4);
 }
 
-[data-theme="light"] {
-  --t-bg-primary: #faf9f7;
-  --t-bg-secondary: #ffffff;
-  --t-bg-card: #ffffff;
-  --t-bg-card-inner: #f5f3f0;
-  --t-border: #e7e5e3;
-  --t-border-subtle: #d6d3d1;
-  --t-text-primary: #1c1917;
-  --t-text-secondary: #57534e;
-  --t-text-dim: #a8a29e;
-  --t-accent-green: #059669;
-  --t-accent-blue: #2563eb;
-  --t-accent-purple: #7c3aed;
-  --t-accent-red: #dc2626;
-  --t-accent-yellow: #d97706;
-  --t-accent-orange: #ea580c;
-  --t-progress-track: #e7e5e3;
-  --t-nav-bg: rgba(255, 255, 255, 0.92);
-  --t-shadow: rgba(0, 0, 0, 0.06);
-  --t-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-  --t-card-border: 1px solid #e7e5e3;
+/* Light theme */
+.theme-light {
+  --bg-primary: #faf9f7;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-inner: #f5f3f0;
+  --border-primary: #e7e5e3;
+  --border-secondary: #d6d3d0;
+  --text-primary: #1c1917;
+  --text-secondary: #57534e;
+  --text-dim: #78716c;
+  --accent-green: #059669;
+  --accent-blue: #2563eb;
+  --accent-purple: #7c3aed;
+  --accent-red: #dc2626;
+  --accent-yellow: #d97706;
+  --accent-orange: #ea580c;
+  --progress-track: #e7e5e3;
+  --nav-bg: rgba(255, 255, 255, 0.92);
+  --shadow: rgba(0, 0, 0, 0.1);
 }
 
-@theme inline {
-  --color-navy-900: var(--t-bg-primary);
-  --color-navy-800: var(--t-bg-secondary);
-  --color-navy-700: var(--t-bg-card);
-  --color-navy-600: var(--t-border-subtle);
-  --color-navy-500: var(--t-border);
-  --color-navy-400: var(--t-border);
-  --color-text-primary: var(--t-text-primary);
-  --color-text-secondary: var(--t-text-secondary);
-  --color-accent-green: var(--t-accent-green);
-  --color-accent-blue: var(--t-accent-blue);
-  --color-accent-purple: var(--t-accent-purple);
-  --color-accent-red: var(--t-accent-red);
-  --color-accent-yellow: var(--t-accent-yellow);
-  --color-accent-orange: var(--t-accent-orange);
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+/* ─── Tailwind v4 @theme ──────────────────────────────────────────── */
+
+@theme {
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-card: var(--bg-card);
+  --color-bg-card-inner: var(--bg-card-inner);
+  --color-border-primary: var(--border-primary);
+  --color-border-secondary: var(--border-secondary);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-dim: var(--text-dim);
+  --color-accent-green: var(--accent-green);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-purple: var(--accent-purple);
+  --color-accent-red: var(--accent-red);
+  --color-accent-yellow: var(--accent-yellow);
+  --color-accent-orange: var(--accent-orange);
+  --color-progress-track: var(--progress-track);
+  --color-nav-bg: var(--nav-bg);
+  --color-shadow: var(--shadow);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
+    system-ui, sans-serif;
 }
 
-* {
-  -webkit-tap-highlight-color: transparent;
+/* ─── Base styles ─────────────────────────────────────────────────── */
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-html, body {
-  height: 100%;
-  background: var(--t-bg-primary);
-  color: var(--t-text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
+    system-ui, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100dvh;
 }
 
-/* Theme transition (only when user toggles, not on load) */
-.theme-transitioning, .theme-transitioning * {
-  transition: background-color 0.3s ease, border-color 0.3s ease !important;
+/* ─── Tabular numbers ─────────────────────────────────────────────── */
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--t-bg-secondary);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--t-border);
-  border-radius: 3px;
-}
+/* ─── Focus visible ───────────────────────────────────────────────── */
 
-/* Smooth page transitions */
-.page-transition {
-  animation: fadeIn 0.3s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Glow effects (warm charcoal palette) */
-.glow-green {
-  box-shadow: 0 0 20px rgba(134, 239, 172, 0.12);
-}
-.glow-blue {
-  box-shadow: 0 0 20px rgba(96, 165, 250, 0.12);
-}
-.glow-purple {
-  box-shadow: 0 0 20px rgba(192, 132, 252, 0.12);
-}
-
-/* Accessibility: focus indicators */
-:focus-visible {
-  outline: 2px solid #4a9eff;
+*:focus-visible {
+  outline: 2px solid var(--accent-blue);
   outline-offset: 2px;
 }
 
-/* Accessibility: reduced motion */
+/* ─── Reduced motion ──────────────────────────────────────────────── */
+
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .page-transition {
-    animation: none;
-  }
 }
 
-/* Tabular numerals for financial data */
-.tabular-nums {
-  font-variant-numeric: tabular-nums;
+/* ─── Safe area insets ────────────────────────────────────────────── */
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Skeleton shimmer */
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-.skeleton {
-  background: linear-gradient(90deg, #0f1f38 25%, #152a4a 50%, #0f1f38 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 12px;
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
-/* Bottom nav gradient fade */
-.nav-fade {
-  background: linear-gradient(to bottom, transparent, #060e1a);
+.safe-left {
+  padding-left: env(safe-area-inset-left, 0px);
 }
 
-/* Overscroll containment */
-.overscroll-contain {
-  overscroll-behavior-y: contain;
+.safe-right {
+  padding-right: env(safe-area-inset-right, 0px);
 }
 
-/* PWA: prevent text selection on interactive elements */
-.select-none button, .select-none [role="button"] {
-  user-select: none;
-  -webkit-user-select: none;
+/* ─── Custom scrollbar (dark theme) ───────────────────────────────── */
+
+:root {
+  scrollbar-color: var(--border-secondary) transparent;
+  scrollbar-width: thin;
 }
 
-/* PWA: prevent image dragging */
-img {
-  -webkit-user-drag: none;
-  user-select: none;
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-/* PWA: disable overscroll on html for standalone mode */
-html {
-  overscroll-behavior: none;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-/* PWA: safe area for standalone mode */
-@supports (padding-top: env(safe-area-inset-top)) {
-  .safe-area-top {
-    padding-top: env(safe-area-inset-top);
-  }
-  .safe-area-bottom {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
+::-webkit-scrollbar-thumb {
+  background-color: var(--border-secondary);
+  border-radius: 3px;
 }
 
-/* Type scale: consistent 8pt grid spacing */
-/* 48px: hero numbers, 24px: page titles, 18px: section headers, 15px: body, 13px: secondary, 12px: minimum labels */
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-dim);
+}
 
-/* Ensure small text on dark backgrounds is readable */
-.text-xs {
-  font-weight: 500;
+/* ─── Selection ───────────────────────────────────────────────────── */
+
+::selection {
+  background-color: var(--accent-blue);
+  color: var(--bg-primary);
 }

@@ -506,16 +506,16 @@ id (text PK), user_id (text FK), current_date (text), day_count (int), notificat
 ## 14. Task Checklist
 
 ### Phase A: Foundation
-- [ ] Initialize Next.js project with TypeScript, Tailwind, App Router
-- [ ] Configure Tailwind with Warm Charcoal palette as CSS custom properties
-- [ ] Set up SQLite + Drizzle ORM, create schema, run migrations
-- [ ] Seed all 40 charities with full content (5 international + 35 country-specific)
-- [ ] Seed tax rules for all 5 countries
-- [ ] Set up iron-session auth with bcrypt
-- [ ] Create shared UI components: Card, Badge, ProgressBar (with ARIA), Button, Toggle, Toast, AnimatedNumber, BottomNav
-- [ ] Set up Zustand store
-- [ ] Create ThemeProvider (dark/light/system) with CSS variable switching
-- [ ] Create level system: getUserLevel(), useFeatureAccess() hook
+- [x] Initialize Next.js project with TypeScript, Tailwind, App Router
+- [x] Configure Tailwind with Warm Charcoal palette as CSS custom properties
+- [x] Set up SQLite + Drizzle ORM, create schema, run migrations
+- [x] Seed all 40 charities with full content (5 international + 35 country-specific)
+- [x] Seed tax rules for all 5 countries
+- [x] Set up iron-session auth with bcrypt
+- [x] Create shared UI components: Card, Badge, ProgressBar (with ARIA), Button, Toggle, Toast, AnimatedNumber, BottomNav
+- [x] Set up Zustand store
+- [x] Create ThemeProvider (dark/light/system) with CSS variable switching
+- [x] Create level system: getUserLevel(), useFeatureAccess() hook
 - [ ] Commit: "Foundation complete"
 
 ### Phase B: Auth + Onboarding

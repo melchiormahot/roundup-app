@@ -1,64 +1,79 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { useEffect, useRef, useState } from 'react';
 
 interface AnimatedNumberProps {
   value: number;
   prefix?: string;
   suffix?: string;
-  decimals?: number;
+  /** Animation duration in ms. Default 800. */
   duration?: number;
+  /** Number of decimal places. Default 0. */
+  decimals?: number;
   className?: string;
 }
 
 export function AnimatedNumber({
   value,
-  prefix = "",
-  suffix = "",
-  decimals = 2,
-  duration = 1.5,
-  className = "",
+  prefix = '',
+  suffix = '',
+  duration = 800,
+  decimals = 0,
+  className = '',
 }: AnimatedNumberProps) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true });
-  const [displayValue, setDisplayValue] = useState(0);
+  const [display, setDisplay] = useState(0);
+  const rafRef = useRef<number>(0);
+  const startRef = useRef<number | null>(null);
+  const fromRef = useRef(0);
 
   useEffect(() => {
-    if (!isInView) return;
+    fromRef.current = display;
+    startRef.current = null;
 
-    let startTime: number;
-    let rafId: number;
+    function animate(timestamp: number) {
+      if (startRef.current === null) {
+        startRef.current = timestamp;
+      }
 
-    const animate = (currentTime: number) => {
-      if (!startTime) startTime = currentTime;
-      const progress = Math.min((currentTime - startTime) / (duration * 1000), 1);
+      const elapsed = timestamp - startRef.current;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // Ease-out cubic
       const eased = 1 - Math.pow(1 - progress, 3);
-      setDisplayValue(eased * value);
+
+      const current = fromRef.current + (value - fromRef.current) * eased;
+      setDisplay(current);
 
       if (progress < 1) {
-        rafId = requestAnimationFrame(animate);
+        rafRef.current = requestAnimationFrame(animate);
+      }
+    }
+
+    rafRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, duration]);
 
-    rafId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafId);
-  }, [isInView, value, duration]);
+  const formatted = display.toFixed(decimals);
 
   return (
-    <motion.span
-      ref={ref}
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={isInView ? { opacity: 1, scale: 1 } : {}}
-      transition={{ duration: 0.5 }}
-      className={`tabular-nums ${className}`}
+    <span
+      className={[
+        'tabular-nums',
+        className,
+      ]
+        .filter(Boolean)
+        .join(' ')}
+      style={{ fontVariantNumeric: 'tabular-nums' }}
     >
       {prefix}
-      {displayValue.toLocaleString("fr-FR", {
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals,
-      })}
+      {formatted}
       {suffix}
-    </motion.span>
+    </span>
   );
 }

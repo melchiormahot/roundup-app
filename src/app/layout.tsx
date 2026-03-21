@@ -1,51 +1,39 @@
-import type { Metadata, Viewport } from "next";
-import "./globals.css";
-import { ServiceWorkerRegistration } from "@/components/ServiceWorkerReg";
-import { ThemeProvider } from "@/components/ThemeProvider";
+import type { Metadata, Viewport } from 'next';
+import { ThemeProvider, ThemeScript } from '@/lib/theme';
+import './globals.css';
 
 export const metadata: Metadata = {
-  title: "RoundUp",
-  description: "Give effortlessly. Save on taxes.",
-  manifest: "/manifest.json",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "black-translucent",
-    title: "RoundUp",
-  },
-  icons: {
-    icon: "/icons/icon-192.png",
-    apple: "/icons/icon-152.png",
+  title: 'RoundUp - Give effortlessly. Save on taxes.',
+  description:
+    'Round up your everyday purchases and donate the spare change to curated charities. Track your impact and save on taxes.',
+  openGraph: {
+    title: 'RoundUp - Give effortlessly. Save on taxes.',
+    description:
+      'Round up your everyday purchases and donate the spare change to curated charities.',
+    type: 'website',
   },
 };
 
 export const viewport: Viewport = {
-  width: "device-width",
+  width: 'device-width',
   initialScale: 1,
-  viewportFit: "cover",
-  themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#1c1917" },
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-  ],
+  maximumScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#121212',
 };
-
-// Blocking script to prevent flash of wrong theme
-const themeScript = `(function(){try{var t=localStorage.getItem('roundup_theme')||'dark';if(t==='system'){t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','dark')}})()`;
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en" className="h-full antialiased" data-theme="dark" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <ThemeScript />
       </head>
-      <body className="min-h-full flex flex-col bg-navy-900 text-text-primary overscroll-none">
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
-        <ServiceWorkerRegistration />
+      <body className="antialiased">
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

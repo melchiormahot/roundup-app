@@ -1,30 +1,19 @@
-import { redirect } from "next/navigation";
-import { getSession } from "@/lib/session";
-import LandingPage from "@/components/LandingPage";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "RoundUp: Donate Effortlessly, Save on Taxes",
-  description: "Round up every purchase to the nearest euro. The spare change goes to charities you choose. Track your tax deduction in real time. Download your tax package in January.",
-  openGraph: {
-    title: "RoundUp: Donate Effortlessly, Save on Taxes",
-    description: "Round up every purchase to the nearest euro. The spare change goes to charities you choose.",
-    type: "website",
-    siteName: "RoundUp",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "RoundUp: Donate Effortlessly, Save on Taxes",
-    description: "Round up every purchase to the nearest euro. The spare change goes to charities you choose.",
-  },
-};
+import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
+import { getIronSession } from 'iron-session';
+import { sessionOptions, SessionData } from '@/lib/session';
 
 export default async function Home() {
-  const session = await getSession();
+  const session = await getIronSession<SessionData>(
+    await cookies(),
+    sessionOptions
+  );
 
   if (session.isLoggedIn) {
-    redirect("/dashboard");
+    redirect('/dashboard');
   }
 
-  return <LandingPage />;
+  // Landing page will be built in Phase H
+  // For now, redirect to login
+  redirect('/login');
 }

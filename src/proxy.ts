@@ -1,42 +1,33 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { getIronSession } from "iron-session";
-import type { SessionData } from "@/lib/session";
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-const sessionOptions = {
-  password: process.env.SESSION_SECRET || "roundup-dev-secret-key-must-be-at-least-32-chars",
-  cookieName: "roundup_session",
-};
-
-export async function proxy(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const sessionCookie = request.cookies.get('roundup_session');
 
   // Public routes that don't need auth
-  const publicPaths = ["/login", "/signup", "/api/auth/login", "/api/auth/signup", "/api/early-access", "/api/charities"];
-  if (publicPaths.some((p) => pathname.startsWith(p))) {
-    return NextResponse.next();
+  const publicRoutes = ['/', '/login', '/signup', '/api/auth/login', '/api/auth/signup', '/api/early-access'];
+
+  // Check if current path is public
+  const isPublicRoute = publicRoutes.some(route => pathname === route) ||
+    pathname.startsWith('/api/auth/') ||
+    pathname.startsWith('/_next/') ||
+    pathname.startsWith('/icons/') ||
+    pathname === '/manifest.json' ||
+    pathname === '/sw.js';
+
+  if (!isPublicRoute && !sessionCookie) {
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // Check session
-  const response = NextResponse.next();
-  const session = await getIronSession<SessionData>(request, response, sessionOptions);
-
-  if (!session.isLoggedIn) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  // Redirect logged-in users from landing/auth pages to dashboard
+  if (sessionCookie && (pathname === '/' || pathname === '/login' || pathname === '/signup')) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    "/dashboard/:path*",
-    "/onboarding/:path*",
-    "/charities/:path*",
-    "/tax/:path*",
-    "/notifications/:path*",
-    "/settings/:path*",
-    "/admin/:path*",
-    "/api/((?!auth).*)",
-  ],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };

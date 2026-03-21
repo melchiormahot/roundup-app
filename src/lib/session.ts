@@ -1,25 +1,21 @@
-import { getIronSession, IronSession } from "iron-session";
-import { cookies } from "next/headers";
+import { SessionOptions } from 'iron-session';
 
 export interface SessionData {
   userId?: string;
   email?: string;
   name?: string;
-  isLoggedIn: boolean;
+  isAdmin?: boolean;
+  jurisdiction?: string;
+  isLoggedIn?: boolean;
 }
 
-const sessionOptions = {
-  password: process.env.SESSION_SECRET || "roundup-dev-secret-key-must-be-at-least-32-chars",
-  cookieName: "roundup_session",
+export const sessionOptions: SessionOptions = {
+  password: process.env.SESSION_SECRET || 'complex_password_at_least_32_characters_long_for_roundup_app_v2',
+  cookieName: 'roundup_session',
   cookieOptions: {
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    sameSite: "lax" as const,
+    sameSite: 'lax' as const,
+    maxAge: 60 * 60 * 24 * 30, // 30 days
   },
 };
-
-export async function getSession(): Promise<IronSession<SessionData>> {
-  const cookieStore = await cookies();
-  const session = await getIronSession<SessionData>(cookieStore, sessionOptions);
-  return session;
-}

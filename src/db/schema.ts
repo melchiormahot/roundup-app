@@ -1,115 +1,182 @@
-import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
+import { relations } from 'drizzle-orm';
 
-export const users = sqliteTable("users", {
-  id: text("id").primaryKey(),
-  email: text("email").notNull().unique(),
-  passwordHash: text("password_hash").notNull(),
-  name: text("name").notNull(),
-  jurisdiction: text("jurisdiction").notNull().default("FR"),
-  incomeBracket: integer("income_bracket").notNull().default(0),
-  debitFrequency: text("debit_frequency").notNull().default("weekly"),
-  onboardingCompleted: integer("onboarding_completed", { mode: "boolean" }).notNull().default(false),
-  onboardingStepReached: integer("onboarding_step_reached").notNull().default(0),
-  isAdmin: integer("is_admin", { mode: "boolean" }).notNull().default(false),
-  referralCode: text("referral_code").unique(),
-  createdAt: text("created_at").notNull(),
+// ─── Users ───────────────────────────────────────────────────────────────────
+
+export const users = sqliteTable('users', {
+  id: text('id').primaryKey(),
+  email: text('email').unique().notNull(),
+  password_hash: text('password_hash').notNull(),
+  name: text('name').notNull(),
+  jurisdiction: text('jurisdiction').default('FR'),
+  income_bracket: integer('income_bracket').default(0), // 0-3
+  debit_frequency: text('debit_frequency').default('weekly'),
+  onboarding_completed: integer('onboarding_completed').default(0),
+  onboarding_step_reached: integer('onboarding_step_reached').default(0),
+  referral_code: text('referral_code').unique(),
+  is_admin: integer('is_admin').default(0),
+  user_level: integer('user_level').default(1), // 1-4
+  level_unlocked_at: text('level_unlocked_at'), // JSON timestamps
+  theme_preference: text('theme_preference').default('dark'),
+  haptic_enabled: integer('haptic_enabled').default(1),
+  created_at: text('created_at'),
 });
 
-export const charities = sqliteTable("charities", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  description: text("description").notNull(),
-  category: text("category").notNull(),
-  icon: text("icon").notNull(),
-  qualityLabel: text("quality_label"),
-  taxRate: integer("tax_rate").notNull(),
-  mission: text("mission").notNull(),
-  impact: text("impact").notNull(), // JSON array of strings
-  crisisEligible: integer("crisis_eligible", { mode: "boolean" }).notNull().default(false),
-  foundingStory: text("founding_story"),
-  howMoneyHelps: text("how_money_helps"), // JSON array of {amount, description}
-  milestones: text("milestones"), // JSON array of {year, title, description}
-  financialBreakdown: text("financial_breakdown"), // JSON {programs, admin, fundraising}
-  fundraisingEfficiency: text("fundraising_efficiency"),
-  countryOfOrigin: text("country_of_origin"),
-  foundedYear: integer("founded_year"),
-  websiteUrl: text("website_url"),
-  certifications: text("certifications"), // JSON array of {name, year}
-  jurisdictionsEligible: text("jurisdictions_eligible"), // JSON array of country codes
-  loiColucheEligible: integer("loi_coluche_eligible", { mode: "boolean" }).notNull().default(false),
-  crossBorderMethod: text("cross_border_method"), // 'national_entity', 'tge', 'none'
-  currency: text("currency").notNull().default("EUR"),
-  displayCountries: text("display_countries"), // JSON array of country codes where this charity appears in catalogue
+// ─── Charities ───────────────────────────────────────────────────────────────
+
+export const charities = sqliteTable('charities', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  description: text('description'),
+  category: text('category'),
+  icon: text('icon'),
+  country_code: text('country_code'),
+  display_countries: text('display_countries'), // JSON array
+  quality_label: text('quality_label'),
+  tax_rate: integer('tax_rate'),
+  loi_coluche_eligible: integer('loi_coluche_eligible').default(0),
+  mission: text('mission'),
+  founding_story: text('founding_story'),
+  impact: text('impact'), // JSON array
+  how_your_money_helps: text('how_your_money_helps'), // JSON array of {amount, description}
+  financial_transparency: text('financial_transparency'), // JSON {programs_pct, admin_pct, fundraising_pct}
+  certifications: text('certifications'), // JSON array of {name, year}
+  milestones: text('milestones'), // JSON array of {year, title, description}
+  jurisdictions_eligible: text('jurisdictions_eligible'), // JSON array
+  cross_border_method: text('cross_border_method'),
+  story: text('story'),
+  website_url: text('website_url'),
+  founded_year: integer('founded_year'),
+  currency: text('currency').default('EUR'),
+  brand_color: text('brand_color'),
 });
 
-export const userCharities = sqliteTable("user_charities", {
-  id: text("id").primaryKey(),
-  userId: text("user_id").notNull().references(() => users.id),
-  charityId: text("charity_id").notNull().references(() => charities.id),
-  allocationPct: integer("allocation_pct").notNull().default(0),
+// ─── User-Charity allocations ────────────────────────────────────────────────
+
+export const user_charities = sqliteTable('user_charities', {
+  id: text('id').primaryKey(),
+  user_id: text('user_id').references(() => users.id),
+  charity_id: text('charity_id').references(() => charities.id),
+  allocation_pct: integer('allocation_pct'),
 });
 
-export const roundups = sqliteTable("roundups", {
-  id: text("id").primaryKey(),
-  userId: text("user_id").notNull().references(() => users.id),
-  merchantName: text("merchant_name").notNull(),
-  purchaseAmount: real("purchase_amount").notNull(),
-  roundupAmount: real("roundup_amount").notNull(),
-  timestamp: text("timestamp").notNull(),
-  status: text("status").notNull().default("pending"),
+// ─── Roundups ────────────────────────────────────────────────────────────────
+
+export const roundups = sqliteTable('roundups', {
+  id: text('id').primaryKey(),
+  user_id: text('user_id').references(() => users.id),
+  amount: real('amount'),
+  merchant_name: text('merchant_name'),
+  category: text('category'),
+  timestamp: text('timestamp'),
 });
 
-export const debits = sqliteTable("debits", {
-  id: text("id").primaryKey(),
-  userId: text("user_id").notNull().references(() => users.id),
-  totalAmount: real("total_amount").notNull(),
-  periodStart: text("period_start").notNull(),
-  periodEnd: text("period_end").notNull(),
-  roundupCount: integer("roundup_count").notNull(),
-  status: text("status").notNull().default("scheduled"),
+// ─── Debits ──────────────────────────────────────────────────────────────────
+
+export const debits = sqliteTable('debits', {
+  id: text('id').primaryKey(),
+  user_id: text('user_id').references(() => users.id),
+  total_amount: real('total_amount'),
+  period_start: text('period_start'),
+  period_end: text('period_end'),
+  roundup_count: integer('roundup_count'),
+  status: text('status').default('pending'),
 });
 
-export const allocations = sqliteTable("allocations", {
-  id: text("id").primaryKey(),
-  debitId: text("debit_id").notNull().references(() => debits.id),
-  charityId: text("charity_id").notNull().references(() => charities.id),
-  amount: real("amount").notNull(),
-  taxRate: integer("tax_rate").notNull(),
+// ─── Allocations ─────────────────────────────────────────────────────────────
+
+export const allocations = sqliteTable('allocations', {
+  id: text('id').primaryKey(),
+  debit_id: text('debit_id').references(() => debits.id),
+  charity_id: text('charity_id').references(() => charities.id),
+  amount: real('amount'),
+  tax_rate: integer('tax_rate'),
 });
 
-export const notifications = sqliteTable("notifications", {
-  id: text("id").primaryKey(),
-  userId: text("user_id").notNull().references(() => users.id),
-  type: text("type").notNull(),
-  title: text("title").notNull(),
-  body: text("body").notNull(),
-  read: integer("read", { mode: "boolean" }).notNull().default(false),
-  createdAt: text("created_at").notNull(),
+// ─── Notifications ───────────────────────────────────────────────────────────
+
+export const notifications = sqliteTable('notifications', {
+  id: text('id').primaryKey(),
+  user_id: text('user_id').references(() => users.id),
+  type: text('type'),
+  title: text('title'),
+  body: text('body'),
+  read: integer('read').default(0),
+  created_at: text('created_at'),
 });
 
-export const simulationState = sqliteTable("simulation_state", {
-  id: text("id").primaryKey(),
-  userId: text("user_id").notNull().references(() => users.id).unique(),
-  currentDate: text("current_date").notNull(),
-  dayCount: integer("day_count").notNull().default(0),
-  enabled: integer("enabled", { mode: "boolean" }).notNull().default(false),
-  notificationStyle: text("notification_style").notNull().default("factual"),
-  seed: integer("seed").notNull().default(42),
+// ─── Jurisdiction tax rules ──────────────────────────────────────────────────
+
+export const jurisdiction_tax_rules = sqliteTable('jurisdiction_tax_rules', {
+  id: text('id').primaryKey(),
+  country_code: text('country_code'),
+  standard_rate: integer('standard_rate'),
+  enhanced_rate: integer('enhanced_rate'),
+  enhanced_ceiling: real('enhanced_ceiling'),
+  income_cap_pct: integer('income_cap_pct'),
+  carry_forward_years: integer('carry_forward_years'),
+  receipt_format: text('receipt_format'),
+  currency: text('currency'),
+  currency_symbol: text('currency_symbol'),
 });
 
-export const earlyAccess = sqliteTable("early_access", {
-  id: text("id").primaryKey(),
-  email: text("email").notNull().unique(),
-  country: text("country"),
-  createdAt: text("created_at").notNull(),
+// ─── Early access ────────────────────────────────────────────────────────────
+
+export const early_access = sqliteTable('early_access', {
+  id: text('id').primaryKey(),
+  email: text('email').unique(),
+  country: text('country'),
+  created_at: text('created_at'),
 });
 
-export const jurisdictionTaxRules = sqliteTable("jurisdiction_tax_rules", {
-  id: text("id").primaryKey(),
-  countryCode: text("country_code").notNull().unique(),
-  standardRate: integer("standard_rate").notNull(),
-  enhancedRate: integer("enhanced_rate").notNull(),
-  enhancedCeiling: real("enhanced_ceiling").notNull(),
-  incomeCapPct: integer("income_cap_pct").notNull(),
-  receiptFormat: text("receipt_format").notNull(),
+// ─── Simulation state ────────────────────────────────────────────────────────
+
+export const simulation_state = sqliteTable('simulation_state', {
+  id: text('id').primaryKey(),
+  user_id: text('user_id').references(() => users.id),
+  current_date: text('current_date'),
+  day_count: integer('day_count').default(0),
+  notification_style: text('notification_style').default('warm'),
 });
+
+// ─── Relations ───────────────────────────────────────────────────────────────
+
+export const usersRelations = relations(users, ({ many }) => ({
+  user_charities: many(user_charities),
+  roundups: many(roundups),
+  debits: many(debits),
+  notifications: many(notifications),
+  simulation_state: many(simulation_state),
+}));
+
+export const charitiesRelations = relations(charities, ({ many }) => ({
+  user_charities: many(user_charities),
+  allocations: many(allocations),
+}));
+
+export const userCharitiesRelations = relations(user_charities, ({ one }) => ({
+  user: one(users, { fields: [user_charities.user_id], references: [users.id] }),
+  charity: one(charities, { fields: [user_charities.charity_id], references: [charities.id] }),
+}));
+
+export const roundupsRelations = relations(roundups, ({ one }) => ({
+  user: one(users, { fields: [roundups.user_id], references: [users.id] }),
+}));
+
+export const debitsRelations = relations(debits, ({ one, many }) => ({
+  user: one(users, { fields: [debits.user_id], references: [users.id] }),
+  allocations: many(allocations),
+}));
+
+export const allocationsRelations = relations(allocations, ({ one }) => ({
+  debit: one(debits, { fields: [allocations.debit_id], references: [debits.id] }),
+  charity: one(charities, { fields: [allocations.charity_id], references: [charities.id] }),
+}));
+
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  user: one(users, { fields: [notifications.user_id], references: [users.id] }),
+}));
+
+export const simulationStateRelations = relations(simulation_state, ({ one }) => ({
+  user: one(users, { fields: [simulation_state.user_id], references: [users.id] }),
+}));

@@ -1,50 +1,96 @@
-"use client";
+import { create } from 'zustand';
 
-import { create } from "zustand";
-
-interface UserState {
+interface AppState {
+  // User
   userId: string | null;
-  name: string | null;
-  email: string | null;
+  userName: string | null;
+  userLevel: number;
   jurisdiction: string;
   incomeBracket: number;
-  onboardingCompleted: boolean;
-  setUser: (user: Partial<UserState>) => void;
+
+  // Simulation
+  isSimulating: boolean;
+  simulationDate: string;
+
+  // UI
+  showWarmGlow: boolean;
+  warmGlowMessage: string;
+  warmGlowColor: string;
+
+  // Notifications
+  unreadCount: number;
+
+  // Actions
+  setUser: (user: {
+    id: string;
+    name: string;
+    level: number;
+    jurisdiction: string;
+    incomeBracket: number;
+  }) => void;
   clearUser: () => void;
+  setSimulating: (isSimulating: boolean) => void;
+  setSimulationDate: (date: string) => void;
+  triggerWarmGlow: (message: string, color?: string) => void;
+  dismissWarmGlow: () => void;
+  setUnreadCount: (count: number) => void;
 }
 
-export const useUserStore = create<UserState>((set) => ({
+export const useAppStore = create<AppState>((set) => ({
+  // User defaults
   userId: null,
-  name: null,
-  email: null,
-  jurisdiction: "FR",
+  userName: null,
+  userLevel: 1,
+  jurisdiction: 'FR',
   incomeBracket: 0,
-  onboardingCompleted: false,
-  setUser: (user) => set((state) => ({ ...state, ...user })),
+
+  // Simulation defaults
+  isSimulating: false,
+  simulationDate: '',
+
+  // UI defaults
+  showWarmGlow: false,
+  warmGlowMessage: '',
+  warmGlowColor: 'var(--accent-green)',
+
+  // Notifications
+  unreadCount: 0,
+
+  // Actions
+  setUser: (user) =>
+    set({
+      userId: user.id,
+      userName: user.name,
+      userLevel: user.level,
+      jurisdiction: user.jurisdiction,
+      incomeBracket: user.incomeBracket,
+    }),
+
   clearUser: () =>
     set({
       userId: null,
-      name: null,
-      email: null,
-      jurisdiction: "FR",
+      userName: null,
+      userLevel: 1,
+      jurisdiction: 'FR',
       incomeBracket: 0,
-      onboardingCompleted: false,
     }),
-}));
 
-interface ToastState {
-  message: string | null;
-  type: "success" | "error" | "info";
-  showToast: (message: string, type?: "success" | "error" | "info") => void;
-  hideToast: () => void;
-}
+  setSimulating: (isSimulating) => set({ isSimulating }),
 
-export const useToastStore = create<ToastState>((set) => ({
-  message: null,
-  type: "info",
-  showToast: (message, type = "info") => {
-    set({ message, type });
-    setTimeout(() => set({ message: null }), 3000);
-  },
-  hideToast: () => set({ message: null }),
+  setSimulationDate: (date) => set({ simulationDate: date }),
+
+  triggerWarmGlow: (message, color) =>
+    set({
+      showWarmGlow: true,
+      warmGlowMessage: message,
+      warmGlowColor: color ?? 'var(--accent-green)',
+    }),
+
+  dismissWarmGlow: () =>
+    set({
+      showWarmGlow: false,
+      warmGlowMessage: '',
+    }),
+
+  setUnreadCount: (count) => set({ unreadCount: count }),
 }));
