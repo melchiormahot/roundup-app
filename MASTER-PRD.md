@@ -560,11 +560,11 @@ id (text PK), user_id (text FK), current_date (text), day_count (int), notificat
 - [x] Commit: "Tax dashboard complete"
 
 ### Phase F: Notifications + Settings
-- [ ] Notification inbox with typed, coloured feed
-- [ ] Unread badge on nav
-- [ ] Settings: account, theme toggle, bank status, SEPA status, notification toggles, haptics toggle, referral, demo mode, data transparency, cancellation flow
-- [ ] Notification cadence system (quiet hours, cooldown)
-- [ ] Commit: "Notifications and settings complete"
+- [x] Notification inbox with typed, coloured feed
+- [x] Unread badge on nav
+- [x] Settings: account, theme toggle, bank status, SEPA status, notification toggles, haptics toggle, referral, demo mode, data transparency, cancellation flow
+- [x] Notification cadence system (quiet hours, cooldown)
+- [x] Commit: "Notifications and settings complete"
 
 ### Phase G: Simulation Engine
 - [ ] Demo mode controls in Settings
