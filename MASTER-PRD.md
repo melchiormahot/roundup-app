@@ -529,13 +529,13 @@ id (text PK), user_id (text FK), current_date (text), day_count (int), notificat
 - [x] Commit: "Auth and onboarding complete"
 
 ### Phase C: Dashboard
-- [ ] Level 1 dashboard: greeting, total (animated, with context), charity list, first-week journey tracker
-- [ ] Level 2 additions: weekly summary (expandable transactions), tax preview, social proof, milestones
-- [ ] Level 3 additions: crisis banner, consistency counter, impact card, sparkline, delta
-- [ ] Level 4 additions: full tax progress, share button, next milestone accelerator
-- [ ] Warm glow overlay system (3-second full-screen impact statement after simulation)
-- [ ] All language follows behavioral design rules
-- [ ] Commit: "Dashboard complete with progressive disclosure"
+- [x] Level 1 dashboard: greeting, total (animated, with context), charity list, first-week journey tracker
+- [x] Level 2 additions: weekly summary (expandable transactions), tax preview, social proof, milestones
+- [x] Level 3 additions: crisis banner, consistency counter, impact card, sparkline, delta
+- [x] Level 4 additions: full tax progress, share button, next milestone accelerator
+- [x] Warm glow overlay system (3-second full-screen impact statement after simulation)
+- [x] All language follows behavioral design rules
+- [x] Commit: "Dashboard complete with progressive disclosure"
 
 ### Phase D: Charities
 - [ ] Charities browser with search, category filters (7 categories), jurisdiction filter, sort
