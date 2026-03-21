@@ -550,14 +550,14 @@ id (text PK), user_id (text FK), current_date (text), day_count (int), notificat
 - [x] Commit: "Charities complete"
 
 ### Phase E: Tax Dashboard
-- [ ] Tax dashboard with jurisdiction-aware calculations
-- [ ] Circular progress for ceiling
-- [ ] Breakdown by rate with progress bars
-- [ ] Year-end projection
-- [ ] PDF generation (3 PDFs, country-specific format)
-- [ ] Download buttons
-- [ ] Income bracket editor (prompted on first Tax tab visit)
-- [ ] Commit: "Tax dashboard complete"
+- [x] Tax dashboard with jurisdiction-aware calculations
+- [x] Circular progress for ceiling
+- [x] Breakdown by rate with progress bars
+- [x] Year-end projection
+- [x] PDF generation (3 PDFs, country-specific format)
+- [x] Download buttons
+- [x] Income bracket editor (prompted on first Tax tab visit)
+- [x] Commit: "Tax dashboard complete"
 
 ### Phase F: Notifications + Settings
 - [ ] Notification inbox with typed, coloured feed
