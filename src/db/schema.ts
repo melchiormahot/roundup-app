@@ -39,6 +39,7 @@ export const charities = sqliteTable("charities", {
   loiColucheEligible: integer("loi_coluche_eligible", { mode: "boolean" }).notNull().default(false),
   crossBorderMethod: text("cross_border_method"), // 'national_entity', 'tge', 'none'
   currency: text("currency").notNull().default("EUR"),
+  displayCountries: text("display_countries"), // JSON array of country codes where this charity appears in catalogue
 });
 
 export const userCharities = sqliteTable("user_charities", {

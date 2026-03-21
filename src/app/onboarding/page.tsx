@@ -201,7 +201,7 @@ export default function OnboardingPage() {
                 transition={{ duration: Math.random() * 2 + 1.5, ease: "easeIn" }}
                 className="absolute w-3 h-3 rounded-sm"
                 style={{
-                  backgroundColor: ["#5ce0b8", "#4a9eff", "#b48eff", "#ffd93d", "#ff9a76", "#ff6b6b"][i % 6],
+                  backgroundColor: ["#86efac", "#60a5fa", "#c084fc", "#fbbf24", "#fb923c", "#fca5a5"][i % 6],
                 }}
               />
             ))}

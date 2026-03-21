@@ -1,0 +1,1 @@
+ALTER TABLE `charities` ADD `display_countries` text;

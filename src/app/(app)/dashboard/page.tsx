@@ -115,7 +115,7 @@ export default function DashboardPage() {
       {/* Warm Glow Overlay */}
       <WarmGlow
         message={data.impactStatement || "Your spare change is making a difference. Really."}
-        brandColor={topCharity ? getCharityColor(topCharity.charityName) : "#5ce0b8"}
+        brandColor={topCharity ? getCharityColor(topCharity.charityName) : "#86efac"}
         visible={showWarmGlow}
         onDismiss={() => setShowWarmGlow(false)}
       />

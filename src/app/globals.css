@@ -1,50 +1,50 @@
 @import "tailwindcss";
 
-/* Theme variables: dark (default) and light */
+/* Theme variables: Warm Charcoal dark (default) and Warm Light */
 :root, [data-theme="dark"] {
-  --t-bg-primary: #060e1a;
-  --t-bg-secondary: #0b1628;
-  --t-bg-card: #0f1f38;
-  --t-bg-card-inner: rgba(21, 42, 74, 0.2);
-  --t-border: #1f4070;
-  --t-border-subtle: #152a4a;
-  --t-text-primary: #d0dff0;
-  --t-text-secondary: #7a9cc6;
-  --t-text-dim: #3d5a80;
-  --t-accent-green: #5ce0b8;
-  --t-accent-blue: #4a9eff;
-  --t-accent-purple: #b48eff;
-  --t-accent-red: #ff6b6b;
-  --t-accent-yellow: #ffd93d;
-  --t-accent-orange: #ff9a76;
-  --t-progress-track: #0d1f35;
-  --t-nav-bg: rgba(10, 18, 32, 0.92);
-  --t-shadow: rgba(0, 0, 0, 0.3);
+  --t-bg-primary: #121212;
+  --t-bg-secondary: #1c1917;
+  --t-bg-card: #231f1c;
+  --t-bg-card-inner: #2a2522;
+  --t-border: #33302b;
+  --t-border-subtle: #3d3833;
+  --t-text-primary: #e7e5e4;
+  --t-text-secondary: #a8a29e;
+  --t-text-dim: #78716c;
+  --t-accent-green: #86efac;
+  --t-accent-blue: #60a5fa;
+  --t-accent-purple: #c084fc;
+  --t-accent-red: #fca5a5;
+  --t-accent-yellow: #fbbf24;
+  --t-accent-orange: #fb923c;
+  --t-progress-track: #292524;
+  --t-nav-bg: rgba(28, 25, 23, 0.92);
+  --t-shadow: rgba(0, 0, 0, 0.4);
   --t-card-shadow: none;
-  --t-card-border: 1px solid #1f4070;
+  --t-card-border: 1px solid #33302b;
 }
 
 [data-theme="light"] {
-  --t-bg-primary: #f5f7fa;
+  --t-bg-primary: #faf9f7;
   --t-bg-secondary: #ffffff;
   --t-bg-card: #ffffff;
-  --t-bg-card-inner: #f0f2f5;
-  --t-border: #e2e6ec;
-  --t-border-subtle: #d0d5dc;
-  --t-text-primary: #1a1f2e;
-  --t-text-secondary: #5a6578;
-  --t-text-dim: #9aa3b2;
-  --t-accent-green: #0da678;
+  --t-bg-card-inner: #f5f3f0;
+  --t-border: #e7e5e3;
+  --t-border-subtle: #d6d3d1;
+  --t-text-primary: #1c1917;
+  --t-text-secondary: #57534e;
+  --t-text-dim: #a8a29e;
+  --t-accent-green: #059669;
   --t-accent-blue: #2563eb;
   --t-accent-purple: #7c3aed;
   --t-accent-red: #dc2626;
   --t-accent-yellow: #d97706;
   --t-accent-orange: #ea580c;
-  --t-progress-track: #e5e7eb;
+  --t-progress-track: #e7e5e3;
   --t-nav-bg: rgba(255, 255, 255, 0.92);
-  --t-shadow: rgba(0, 0, 0, 0.08);
-  --t-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --t-card-border: 1px solid #e2e6ec;
+  --t-shadow: rgba(0, 0, 0, 0.06);
+  --t-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --t-card-border: 1px solid #e7e5e3;
 }
 
 @theme inline {
@@ -103,15 +103,15 @@ html, body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Glow effects */
+/* Glow effects (warm charcoal palette) */
 .glow-green {
-  box-shadow: 0 0 20px rgba(92, 224, 184, 0.15);
+  box-shadow: 0 0 20px rgba(134, 239, 172, 0.12);
 }
 .glow-blue {
-  box-shadow: 0 0 20px rgba(74, 158, 255, 0.15);
+  box-shadow: 0 0 20px rgba(96, 165, 250, 0.12);
 }
 .glow-purple {
-  box-shadow: 0 0 20px rgba(180, 142, 255, 0.15);
+  box-shadow: 0 0 20px rgba(192, 132, 252, 0.12);
 }
 
 /* Accessibility: focus indicators */

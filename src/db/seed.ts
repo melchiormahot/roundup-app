@@ -348,7 +348,45 @@ const charityData = [
   },
 ];
 
-db.insert(schema.charities).values(charityData).run();
+// Set displayCountries based on charity associations
+const displayMap: Record<string, string[]> = {
+  // International (all countries)
+  "Médecins Sans Frontières": ["FR","GB","DE","ES","BE"],
+  "WWF France": ["FR","GB","DE","ES","BE"],
+  "Amnesty International": ["FR","GB","DE","ES","BE"],
+  "UNICEF": ["FR","GB","DE","ES","BE"],
+  "Red Cross / ICRC": ["FR","GB","DE","ES","BE"],
+  // French
+  "Ligue contre le cancer": ["FR"],
+  "Restos du Cœur": ["FR"],
+  "Secours Populaire": ["FR"],
+  "Action contre la Faim": ["FR"],
+  "Médecins du Monde": ["FR"],
+  "Fondation pour la Recherche Médicale": ["FR"],
+  "Croix-Rouge française": ["FR"],
+  "Handicap International": ["FR"],
+  // UK
+  "Cancer Research UK": ["GB"],
+  "Macmillan Cancer Support": ["GB"],
+  "British Heart Foundation": ["GB"],
+  "Save the Children": ["GB"],
+  // German
+  "Deutsche Krebshilfe": ["DE"],
+  "Greenpeace": ["DE","FR","GB","ES","BE"],
+  // International orgs with wide reach
+  "SOS Children's Villages": ["DE","FR","BE","ES"],
+  "Terre des Hommes": ["DE","FR","BE","ES"],
+  // US (available as international options)
+  "St. Jude Children's Research Hospital": [],
+  "Direct Relief": [],
+};
+
+const charityDataWithDisplay = charityData.map((c) => ({
+  ...c,
+  displayCountries: J(displayMap[c.name] || [c.countryOfOrigin || "FR"]),
+}));
+
+db.insert(schema.charities).values(charityDataWithDisplay).run();
 
 // Seed jurisdiction tax rules for all 5 countries
 const taxRules = [
@@ -363,7 +401,7 @@ for (const rule of taxRules) {
 }
 
 console.log("✅ Database seeded successfully");
-console.log(`  ${charityData.length} charities with full content`);
+console.log(`  ${charityDataWithDisplay.length} charities with full content`);
 console.log("  5 jurisdictions (FR, GB, DE, BE, ES)");
 
 sqlite.close();

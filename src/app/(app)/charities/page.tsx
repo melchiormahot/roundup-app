@@ -69,7 +69,18 @@ export default function CharitiesPage() {
     try { return JSON.parse(c.certifications); } catch { return []; }
   }
 
-  let filtered = charities;
+  function isInCatalogue(c: Charity): boolean {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const dc = (c as any).displayCountries;
+    if (!dc) return true;
+    try {
+      const parsed = typeof dc === "string" ? JSON.parse(dc) : dc;
+      return Array.isArray(parsed) ? parsed.includes(userJurisdiction) : true;
+    } catch { return true; }
+  }
+
+  // Filter to country catalogue first
+  let filtered = charities.filter(isInCatalogue);
 
   // Category filter
   if (filter !== "all") filtered = filtered.filter((c) => c.category === filter);

@@ -4,8 +4,8 @@
   "description": "Donate effortlessly by rounding up every purchase. Track your tax deductions in real time.",
   "start_url": "/dashboard",
   "display": "standalone",
-  "background_color": "#060e1a",
-  "theme_color": "#0b1628",
+  "background_color": "#121212",
+  "theme_color": "#1c1917",
   "orientation": "portrait",
   "categories": ["finance", "lifestyle"],
   "icons": [

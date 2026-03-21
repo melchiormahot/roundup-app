@@ -16,7 +16,7 @@ const GLOW_VARIANTS = [
   { emoji: "🌟", prefix: "Your generosity" },
 ];
 
-export function WarmGlow({ message, brandColor = "#5ce0b8", visible, onDismiss }: WarmGlowProps) {
+export function WarmGlow({ message, brandColor = "#86efac", visible, onDismiss }: WarmGlowProps) {
   useEffect(() => {
     if (visible) {
       const timer = setTimeout(onDismiss, 4000);
@@ -34,7 +34,7 @@ export function WarmGlow({ message, brandColor = "#5ce0b8", visible, onDismiss }
           transition={{ duration: 0.5 }}
           onClick={onDismiss}
           className="fixed inset-0 z-[100] flex items-center justify-center cursor-pointer"
-          style={{ background: `radial-gradient(circle at center, ${brandColor}15 0%, #060e1a 70%)` }}
+          style={{ background: `radial-gradient(circle at center, ${brandColor}15 0%, #121212 70%)` }}
         >
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
