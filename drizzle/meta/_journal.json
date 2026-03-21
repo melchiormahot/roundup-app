@@ -29,6 +29,13 @@
       "when": 1774056800481,
       "tag": "0003_mysterious_thor",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1774057686909,
+      "tag": "0004_organic_sugar_man",
+      "breakpoints": true
     }
   ]
 }

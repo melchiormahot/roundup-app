@@ -36,6 +36,7 @@ export const config = {
     "/tax/:path*",
     "/notifications/:path*",
     "/settings/:path*",
+    "/admin/:path*",
     "/api/((?!auth).*)",
   ],
 };

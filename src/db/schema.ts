@@ -9,6 +9,8 @@ export const users = sqliteTable("users", {
   incomeBracket: integer("income_bracket").notNull().default(0),
   debitFrequency: text("debit_frequency").notNull().default("weekly"),
   onboardingCompleted: integer("onboarding_completed", { mode: "boolean" }).notNull().default(false),
+  onboardingStepReached: integer("onboarding_step_reached").notNull().default(0),
+  isAdmin: integer("is_admin", { mode: "boolean" }).notNull().default(false),
   referralCode: text("referral_code").unique(),
   createdAt: text("created_at").notNull(),
 });
