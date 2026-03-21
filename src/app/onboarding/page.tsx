@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/Button";
@@ -38,9 +38,21 @@ interface Charity {
   taxRate: number;
 }
 
+// Reordered steps:
+// 0: Welcome
+// 1: Jurisdiction + Income (merged)
+// 2: Tax Preview
+// 3: Charity Picker (before bank for emotional investment)
+// 4: Bank Connection
+// 5: SEPA Mandate
+// 6: Celebration
+
+const TOTAL_STEPS = 7;
+
 export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState(0);
+  const [direction, setDirection] = useState(1);
   const [jurisdiction, setJurisdiction] = useState("FR");
   const [incomeBracket, setIncomeBracket] = useState(1);
   const [bankConnecting, setBankConnecting] = useState(false);
@@ -51,6 +63,7 @@ export default function OnboardingPage() {
   const [selectedCharities, setSelectedCharities] = useState<string[]>([]);
   const [showConfetti, setShowConfetti] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const headingRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     fetch("/api/charities")
@@ -59,6 +72,13 @@ export default function OnboardingPage() {
       .catch(() => {});
   }, []);
 
+  // Focus heading after step change for screen readers
+  useEffect(() => {
+    if (headingRef.current) {
+      headingRef.current.focus();
+    }
+  }, [step]);
+
   const taxPreview = INCOME_BRACKETS[incomeBracket]?.taxPreview || 285;
 
   const canProceed = useCallback(() => {
@@ -66,11 +86,10 @@ export default function OnboardingPage() {
       case 0: return true;
       case 1: return !!jurisdiction;
       case 2: return true;
-      case 3: return true;
+      case 3: return selectedCharities.length > 0;
       case 4: return bankConnected;
       case 5: return sepaSigned;
-      case 6: return selectedCharities.length > 0;
-      case 7: return true;
+      case 6: return true;
       default: return false;
     }
   }, [step, jurisdiction, bankConnected, sepaSigned, selectedCharities]);
@@ -108,27 +127,26 @@ export default function OnboardingPage() {
   }
 
   function nextStep() {
-    if (step === 6) {
-      setStep(7);
+    if (step === 5) {
+      setDirection(1);
+      setStep(6);
       handleComplete();
-    } else if (step < 7) {
+    } else if (step < 6) {
+      setDirection(1);
       setStep(step + 1);
-      if (step + 1 === 3) {
-        setTimeout(() => setShowConfetti(true), 500);
-        setTimeout(() => setShowConfetti(false), 3000);
-      }
     }
   }
 
   function prevStep() {
-    if (step > 0) setStep(step - 1);
+    if (step > 0) {
+      setDirection(-1);
+      setStep(step - 1);
+    }
   }
-
-  const totalSteps = 8;
 
   return (
     <div className="min-h-screen bg-navy-900 flex flex-col">
-      {/* Confetti overlay */}
+      {/* Confetti overlay (only on final celebration) */}
       <AnimatePresence>
         {showConfetti && (
           <motion.div
@@ -163,12 +181,13 @@ export default function OnboardingPage() {
 
       {/* Step content */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={step}
-            initial={{ opacity: 0, x: 40 }}
+            custom={direction}
+            initial={{ opacity: 0, x: direction * 40 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -40 }}
+            exit={{ opacity: 0, x: direction * -40 }}
             transition={{ duration: 0.3 }}
             className="w-full max-w-sm"
           >
@@ -183,75 +202,70 @@ export default function OnboardingPage() {
                 >
                   💚
                 </motion.div>
-                <h1 className="text-3xl font-bold text-text-primary">RoundUp</h1>
+                <h1 ref={headingRef} tabIndex={-1} className="text-3xl font-bold text-text-primary outline-none">RoundUp</h1>
                 <p className="text-xl text-text-secondary">Give effortlessly. Save on taxes.</p>
-                <p className="text-sm text-text-secondary/70">
+                <p className="text-sm text-text-secondary/70 font-medium">
                   Every purchase you make rounds up to the nearest euro. The difference goes to charities you choose. It all counts towards your tax deductions.
                 </p>
               </div>
             )}
 
-            {/* Step 1: Jurisdiction */}
+            {/* Step 1: Jurisdiction + Income (merged) */}
             {step === 1 && (
               <div className="space-y-5">
-                <div className="text-center mb-6">
-                  <h2 className="text-2xl font-bold text-text-primary mb-2">Where are you based?</h2>
-                  <p className="text-text-secondary text-sm">This determines your tax benefits</p>
+                <div className="text-center mb-4">
+                  <h2 ref={headingRef} tabIndex={-1} className="text-2xl font-bold text-text-primary mb-2 outline-none">About you</h2>
+                  <p className="text-text-secondary text-sm font-medium">Where you are based and your income range</p>
                 </div>
-                <div className="space-y-3">
-                  {JURISDICTIONS.map((j) => (
-                    <button
-                      key={j.code}
-                      onClick={() => setJurisdiction(j.code)}
-                      className={`w-full flex items-center gap-4 p-4 rounded-2xl border transition-all ${
-                        jurisdiction === j.code
-                          ? "bg-accent-blue/10 border-accent-blue"
-                          : "bg-navy-700 border-navy-600 hover:border-navy-500"
-                      }`}
-                    >
-                      <span className="text-2xl">{j.flag}</span>
-                      <div className="text-left flex-1">
-                        <div className="text-text-primary font-medium">{j.name}</div>
-                        <div className="text-text-secondary text-xs">Tax credit: {j.rate}</div>
-                      </div>
-                      {jurisdiction === j.code && (
-                        <Check className="w-5 h-5 text-accent-blue" />
-                      )}
-                    </button>
-                  ))}
+                <div>
+                  <p className="text-text-secondary text-xs font-medium mb-2 uppercase tracking-wider">Country</p>
+                  <div className="space-y-2">
+                    {JURISDICTIONS.map((j) => (
+                      <button
+                        key={j.code}
+                        onClick={() => setJurisdiction(j.code)}
+                        className={`w-full flex items-center gap-4 p-3.5 rounded-2xl border transition-all ${
+                          jurisdiction === j.code
+                            ? "bg-accent-blue/10 border-accent-blue"
+                            : "bg-navy-700 border-[#1f4070] hover:border-navy-500"
+                        }`}
+                      >
+                        <span className="text-xl">{j.flag}</span>
+                        <div className="text-left flex-1">
+                          <div className="text-text-primary font-medium text-sm">{j.name}</div>
+                        </div>
+                        {jurisdiction === j.code && (
+                          <Check className="w-5 h-5 text-accent-blue" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-text-secondary text-xs font-medium mb-2 uppercase tracking-wider">Annual income</p>
+                  <div className="space-y-2">
+                    {INCOME_BRACKETS.map((b) => (
+                      <button
+                        key={b.value}
+                        onClick={() => setIncomeBracket(b.value)}
+                        className={`w-full p-3.5 rounded-2xl border text-left transition-all ${
+                          incomeBracket === b.value
+                            ? "bg-accent-blue/10 border-accent-blue"
+                            : "bg-navy-700 border-[#1f4070] hover:border-navy-500"
+                        }`}
+                      >
+                        <div className="text-text-primary font-medium text-sm">{b.label}</div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* Step 2: Income */}
+            {/* Step 2: Tax Preview */}
             {step === 2 && (
-              <div className="space-y-5">
-                <div className="text-center mb-6">
-                  <h2 className="text-2xl font-bold text-text-primary mb-2">Annual income range</h2>
-                  <p className="text-text-secondary text-sm">Helps us estimate your tax savings</p>
-                </div>
-                <div className="space-y-3">
-                  {INCOME_BRACKETS.map((b) => (
-                    <button
-                      key={b.value}
-                      onClick={() => setIncomeBracket(b.value)}
-                      className={`w-full p-4 rounded-2xl border text-left transition-all ${
-                        incomeBracket === b.value
-                          ? "bg-accent-blue/10 border-accent-blue"
-                          : "bg-navy-700 border-navy-600 hover:border-navy-500"
-                      }`}
-                    >
-                      <div className="text-text-primary font-medium">{b.label}</div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Step 3: Tax Preview */}
-            {step === 3 && (
               <div className="text-center space-y-6">
-                <h2 className="text-2xl font-bold text-text-primary mb-2">Your estimated annual tax saving</h2>
+                <h2 ref={headingRef} tabIndex={-1} className="text-2xl font-bold text-text-primary mb-2 outline-none">Your estimated annual tax saving</h2>
                 <motion.div
                   initial={{ scale: 0.5, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
@@ -259,11 +273,53 @@ export default function OnboardingPage() {
                 >
                   <CountUp target={taxPreview} />
                 </motion.div>
-                <p className="text-text-secondary text-sm">
+                <p className="text-text-secondary text-sm font-medium">
                   Based on your income bracket and jurisdiction, donating through RoundUp could save you up to <span className="text-accent-green font-semibold">€{taxPreview}</span> per year in tax credits.
                 </p>
-                <p className="text-text-secondary/60 text-xs">
+                <p className="text-text-secondary/60 text-xs font-medium">
                   This is an estimate. Actual savings depend on your total donations and applicable ceilings.
+                </p>
+              </div>
+            )}
+
+            {/* Step 3: Charity Picker (moved before bank) */}
+            {step === 3 && (
+              <div className="space-y-5">
+                <div className="text-center mb-4">
+                  <h2 ref={headingRef} tabIndex={-1} className="text-2xl font-bold text-text-primary mb-2 outline-none">Choose your charities</h2>
+                  <p className="text-text-secondary text-sm font-medium">Select one or more to receive your round ups</p>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {charities.map((c) => {
+                    const selected = selectedCharities.includes(c.id);
+                    return (
+                      <button
+                        key={c.id}
+                        onClick={() => toggleCharity(c.id)}
+                        className={`relative flex flex-col items-center gap-2 p-4 rounded-2xl border transition-all ${
+                          selected
+                            ? "bg-accent-green/10 border-accent-green"
+                            : "bg-navy-700 border-[#1f4070] hover:border-navy-500"
+                        }`}
+                      >
+                        {selected && (
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="absolute top-2 right-2 w-5 h-5 bg-accent-green rounded-full flex items-center justify-center"
+                          >
+                            <Check className="w-3 h-3 text-navy-900" />
+                          </motion.div>
+                        )}
+                        <span className="text-2xl">{c.icon}</span>
+                        <span className="text-text-primary text-xs font-medium text-center">{c.name}</span>
+                        <span className="text-text-secondary text-xs font-medium">{c.taxRate}% tax credit</span>
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="text-center text-text-secondary text-xs font-medium">
+                  {selectedCharities.length} selected. Donations split equally by default.
                 </p>
               </div>
             )}
@@ -271,9 +327,9 @@ export default function OnboardingPage() {
             {/* Step 4: Bank Connection */}
             {step === 4 && (
               <div className="space-y-5">
-                <div className="text-center mb-6">
-                  <h2 className="text-2xl font-bold text-text-primary mb-2">Connect your bank</h2>
-                  <p className="text-text-secondary text-sm">Select your bank to track transactions</p>
+                <div className="text-center mb-4">
+                  <h2 ref={headingRef} tabIndex={-1} className="text-2xl font-bold text-text-primary mb-2 outline-none">Connect your bank</h2>
+                  <p className="text-text-secondary text-sm font-medium">Select your bank to track transactions</p>
                 </div>
                 {bankConnected ? (
                   <motion.div
@@ -285,12 +341,12 @@ export default function OnboardingPage() {
                       <Check className="w-8 h-8 text-accent-green" />
                     </div>
                     <p className="text-accent-green font-semibold text-lg">Connected!</p>
-                    <p className="text-text-secondary text-sm">{selectedBank}</p>
+                    <p className="text-text-secondary text-sm font-medium">{selectedBank}</p>
                   </motion.div>
                 ) : bankConnecting ? (
                   <div className="text-center py-12 space-y-4">
                     <Loader2 className="w-10 h-10 text-accent-blue animate-spin mx-auto" />
-                    <p className="text-text-secondary">Connecting to {selectedBank}...</p>
+                    <p className="text-text-secondary font-medium">Connecting to {selectedBank}...</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-3">
@@ -298,7 +354,7 @@ export default function OnboardingPage() {
                       <button
                         key={b.name}
                         onClick={() => handleBankConnect(b.name)}
-                        className="flex flex-col items-center gap-3 p-4 bg-navy-700 border border-navy-600 rounded-2xl hover:border-navy-500 transition-all"
+                        className="flex flex-col items-center gap-3 p-4 bg-navy-700 border border-[#1f4070] rounded-2xl hover:border-navy-500 transition-all"
                       >
                         <div
                           className="w-10 h-10 rounded-xl flex items-center justify-center"
@@ -317,29 +373,29 @@ export default function OnboardingPage() {
             {/* Step 5: SEPA Mandate */}
             {step === 5 && (
               <div className="space-y-5">
-                <div className="text-center mb-6">
-                  <h2 className="text-2xl font-bold text-text-primary mb-2">SEPA Direct Debit</h2>
-                  <p className="text-text-secondary text-sm">Authorise automatic donations</p>
+                <div className="text-center mb-4">
+                  <h2 ref={headingRef} tabIndex={-1} className="text-2xl font-bold text-text-primary mb-2 outline-none">SEPA Direct Debit</h2>
+                  <p className="text-text-secondary text-sm font-medium">Authorise automatic donations</p>
                 </div>
-                <div className="bg-navy-700 border border-navy-600 rounded-2xl p-5 space-y-4">
+                <div className="bg-navy-700 border border-[#1f4070] rounded-2xl p-5 space-y-4">
                   <div className="flex justify-between text-sm">
-                    <span className="text-text-secondary">Creditor</span>
+                    <span className="text-text-secondary font-medium">Creditor</span>
                     <span className="text-text-primary">RoundUp SAS</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-text-secondary">Mandate reference</span>
+                    <span className="text-text-secondary font-medium">Mandate reference</span>
                     <span className="text-text-primary font-mono text-xs">RNDUP-2026-001</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-text-secondary">Frequency</span>
+                    <span className="text-text-secondary font-medium">Frequency</span>
                     <span className="text-text-primary">Weekly</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-text-secondary">Bank</span>
+                    <span className="text-text-secondary font-medium">Bank</span>
                     <span className="text-text-primary">{selectedBank || "Your bank"}</span>
                   </div>
-                  <div className="border-t border-navy-600 pt-3">
-                    <div className="flex items-start gap-2 text-xs text-text-secondary">
+                  <div className="border-t border-[#1f4070] pt-3">
+                    <div className="flex items-start gap-2 text-xs text-text-secondary font-medium">
                       <Shield className="w-4 h-4 shrink-0 mt-0.5 text-accent-blue" />
                       <span>A €0.00 verification charge will confirm your account. No money is taken until your first round up week completes.</span>
                     </div>
@@ -357,50 +413,8 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            {/* Step 6: Charity Picker */}
+            {/* Step 6: Celebration */}
             {step === 6 && (
-              <div className="space-y-5">
-                <div className="text-center mb-6">
-                  <h2 className="text-2xl font-bold text-text-primary mb-2">Choose your charities</h2>
-                  <p className="text-text-secondary text-sm">Select one or more to receive your round ups</p>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  {charities.map((c) => {
-                    const selected = selectedCharities.includes(c.id);
-                    return (
-                      <button
-                        key={c.id}
-                        onClick={() => toggleCharity(c.id)}
-                        className={`relative flex flex-col items-center gap-2 p-4 rounded-2xl border transition-all ${
-                          selected
-                            ? "bg-accent-green/10 border-accent-green"
-                            : "bg-navy-700 border-navy-600 hover:border-navy-500"
-                        }`}
-                      >
-                        {selected && (
-                          <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            className="absolute top-2 right-2 w-5 h-5 bg-accent-green rounded-full flex items-center justify-center"
-                          >
-                            <Check className="w-3 h-3 text-navy-900" />
-                          </motion.div>
-                        )}
-                        <span className="text-2xl">{c.icon}</span>
-                        <span className="text-text-primary text-xs font-medium text-center">{c.name}</span>
-                        <span className="text-text-secondary text-xs">{c.taxRate}% tax credit</span>
-                      </button>
-                    );
-                  })}
-                </div>
-                <p className="text-center text-text-secondary text-xs">
-                  {selectedCharities.length} selected. Donations split equally by default.
-                </p>
-              </div>
-            )}
-
-            {/* Step 7: Celebration */}
-            {step === 7 && (
               <div className="text-center space-y-6 py-8">
                 <motion.div
                   initial={{ scale: 0 }}
@@ -410,8 +424,8 @@ export default function OnboardingPage() {
                 >
                   🎉
                 </motion.div>
-                <h2 className="text-3xl font-bold text-text-primary">You&apos;re all set!</h2>
-                <p className="text-text-secondary">
+                <h2 ref={headingRef} tabIndex={-1} className="text-3xl font-bold text-text-primary outline-none">You&apos;re all set!</h2>
+                <p className="text-text-secondary font-medium">
                   Your round ups are now active. Every purchase makes a difference.
                 </p>
                 <Button
@@ -429,7 +443,7 @@ export default function OnboardingPage() {
       </div>
 
       {/* Navigation */}
-      {step < 7 && (
+      {step < 6 && (
         <div className="px-6 pb-8 space-y-4">
           <div className="flex gap-3">
             {step > 0 && (
@@ -439,17 +453,20 @@ export default function OnboardingPage() {
             )}
             <Button fullWidth onClick={nextStep} disabled={!canProceed()}>
               <span className="flex items-center gap-2 justify-center">
-                {step === 6 ? "Finish Setup" : "Continue"}
+                {step === 5 ? "Finish Setup" : "Continue"}
                 <ChevronRight className="w-4 h-4" />
               </span>
             </Button>
           </div>
 
-          {/* Step dots */}
-          <div className="flex justify-center gap-2">
-            {Array.from({ length: totalSteps }).map((_, i) => (
+          {/* Step dots with ARIA */}
+          <div className="flex justify-center gap-2" role="group" aria-label="Onboarding progress">
+            {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
               <div
                 key={i}
+                role="img"
+                aria-label={`Step ${i + 1} of ${TOTAL_STEPS}`}
+                aria-current={i === step ? "step" : undefined}
                 className={`w-2 h-2 rounded-full transition-all duration-300 ${
                   i === step ? "bg-accent-blue w-6" : i < step ? "bg-accent-blue/40" : "bg-navy-600"
                 }`}
@@ -466,7 +483,6 @@ function CountUp({ target }: { target: number }) {
   const [value, setValue] = useState(0);
 
   useEffect(() => {
-    let start = 0;
     const duration = 1500;
     const startTime = Date.now();
 
@@ -474,8 +490,7 @@ function CountUp({ target }: { target: number }) {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
-      start = Math.round(eased * target);
-      setValue(start);
+      setValue(Math.round(eased * target));
       if (progress < 1) requestAnimationFrame(animate);
     }
 
@@ -483,7 +498,7 @@ function CountUp({ target }: { target: number }) {
   }, [target]);
 
   return (
-    <div className="text-6xl font-bold text-accent-green">
+    <div className="text-6xl font-bold text-accent-green tabular-nums">
       €{value}
     </div>
   );

@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
-import { ChevronLeft, ShieldCheck, Target } from "lucide-react";
+import { ChevronLeft, ShieldCheck, Target, Info } from "lucide-react";
 import { useToastStore } from "@/store";
 
 interface CharityDetail {
@@ -30,6 +30,7 @@ export default function CharityDetailPage({ params }: { params: Promise<{ id: st
   const [charity, setCharity] = useState<CharityDetail | null>(null);
   const [allocation, setAllocation] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [showDonEnConfiance, setShowDonEnConfiance] = useState(false);
 
   useEffect(() => {
     fetch(`/api/charities/${id}`)
@@ -96,10 +97,34 @@ export default function CharityDetailPage({ params }: { params: Promise<{ id: st
         </div>
       </div>
 
+      {/* Don en Confiance explainer */}
+      {charity.qualityLabel && (
+        <div className="mb-4">
+          <button
+            onClick={() => setShowDonEnConfiance(!showDonEnConfiance)}
+            className="flex items-center gap-1.5 text-xs text-text-secondary font-medium hover:text-text-primary transition-colors min-h-[44px] px-1"
+          >
+            <Info className="w-3.5 h-3.5" />
+            What is Don en Confiance?
+          </button>
+          {showDonEnConfiance && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              className="px-1 pb-2"
+            >
+              <p className="text-text-secondary text-xs font-medium leading-relaxed">
+                Don en Confiance is an independent French oversight body that monitors charities for ethical fundraising, financial transparency, and governance. Only organisations that meet strict standards receive this label.
+              </p>
+            </motion.div>
+          )}
+        </div>
+      )}
+
       {/* Mission */}
       <Card delay={0.1} className="mb-4">
         <h3 className="text-text-primary font-semibold mb-2">Mission</h3>
-        <p className="text-text-secondary text-sm leading-relaxed">{charity.mission}</p>
+        <p className="text-text-secondary text-sm leading-relaxed font-medium">{charity.mission}</p>
       </Card>
 
       {/* Impact */}

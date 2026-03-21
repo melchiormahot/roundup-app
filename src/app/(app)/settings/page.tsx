@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { Toggle } from "@/components/ui/Toggle";
 import { Button } from "@/components/ui/Button";
 import { useToastStore } from "@/store";
-import { Copy, LogOut, RefreshCw, CheckCircle, Building2, FileCheck2 } from "lucide-react";
+import { Copy, LogOut, RefreshCw, CheckCircle, Building2, FileCheck2, ChevronDown, Lock } from "lucide-react";
 
 interface UserData {
   id: string;
@@ -23,6 +23,7 @@ export default function SettingsPage() {
   const router = useRouter();
   const showToast = useToastStore((s) => s.showToast);
   const [user, setUser] = useState<UserData | null>(null);
+  const [dataExpanded, setDataExpanded] = useState(false);
   const [notifSettings, setNotifSettings] = useState({
     weeklySummary: true,
     monthlyProgress: true,
@@ -96,13 +97,14 @@ export default function SettingsPage() {
             <Building2 className="w-5 h-5 text-accent-blue" />
             <div className="flex-1">
               <p className="text-text-primary text-sm">Bank connection</p>
-              <p className="text-text-secondary text-xs">Simulated</p>
+              <p className="text-text-secondary text-xs font-medium">Simulated · Last synced: just now</p>
             </div>
-            <div className="flex items-center gap-1 text-accent-green text-xs">
+            <div className="flex items-center gap-1 text-accent-green text-xs font-medium">
               <CheckCircle className="w-3.5 h-3.5" />
               Connected
             </div>
           </div>
+          <p className="text-text-secondary/60 text-xs font-medium px-1">Secured by 256-bit encryption</p>
           <div className="flex items-center gap-3 p-3 bg-navy-600/20 rounded-xl">
             <FileCheck2 className="w-5 h-5 text-accent-blue" />
             <div className="flex-1">
@@ -159,6 +161,32 @@ export default function SettingsPage() {
             <Copy className="w-5 h-5" />
           </button>
         </div>
+      </Card>
+
+      {/* Data Transparency */}
+      <Card delay={0.5} className="mb-4">
+        <button
+          onClick={() => setDataExpanded(!dataExpanded)}
+          className="flex items-center justify-between w-full min-h-[44px]"
+        >
+          <div className="flex items-center gap-2">
+            <Lock className="w-4 h-4 text-accent-blue" />
+            <h3 className="text-text-primary font-semibold">What data we store</h3>
+          </div>
+          <ChevronDown className={`w-4 h-4 text-text-secondary transition-transform ${dataExpanded ? "rotate-180" : ""}`} />
+        </button>
+        {dataExpanded && (
+          <div className="mt-3 space-y-2 text-xs text-text-secondary font-medium">
+            <p>RoundUp stores the minimum data needed to operate:</p>
+            <ul className="space-y-1 ml-4 list-disc">
+              <li>Your email address and name</li>
+              <li>Jurisdiction and income bracket (for tax calculations)</li>
+              <li>Charity allocation preferences</li>
+              <li>Transaction round up amounts (not your purchases)</li>
+            </ul>
+            <p>We never store your bank credentials, card numbers, or full transaction details. All data is encrypted at rest and in transit.</p>
+          </div>
+        )}
       </Card>
 
       {/* Actions */}
