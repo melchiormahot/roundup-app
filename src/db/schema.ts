@@ -31,6 +31,14 @@ export const charities = sqliteTable("charities", {
   milestones: text("milestones"), // JSON array of {year, title, description}
   financialBreakdown: text("financial_breakdown"), // JSON {programs, admin, fundraising}
   fundraisingEfficiency: text("fundraising_efficiency"),
+  countryOfOrigin: text("country_of_origin"),
+  foundedYear: integer("founded_year"),
+  websiteUrl: text("website_url"),
+  certifications: text("certifications"), // JSON array of {name, year}
+  jurisdictionsEligible: text("jurisdictions_eligible"), // JSON array of country codes
+  loiColucheEligible: integer("loi_coluche_eligible", { mode: "boolean" }).notNull().default(false),
+  crossBorderMethod: text("cross_border_method"), // 'national_entity', 'tge', 'none'
+  currency: text("currency").notNull().default("EUR"),
 });
 
 export const userCharities = sqliteTable("user_charities", {

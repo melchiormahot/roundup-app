@@ -14,6 +14,8 @@ interface HowMoneyHelps { amount: number; description: string }
 interface Milestone { year: number; title: string; description: string }
 interface FinancialBreakdown { programs: number; admin: number; fundraising: number }
 
+interface Certification { name: string; year?: number }
+
 interface CharityDetail {
   id: string;
   name: string;
@@ -30,6 +32,13 @@ interface CharityDetail {
   milestones: Milestone[];
   financialBreakdown: FinancialBreakdown | null;
   fundraisingEfficiency: string | null;
+  countryOfOrigin: string | null;
+  foundedYear: number | null;
+  currency: string;
+  certifications: Certification[];
+  jurisdictionsEligible: string[];
+  loiColucheEligible: boolean;
+  crossBorderMethod: string | null;
 }
 
 export default function CharityDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -247,13 +256,52 @@ export default function CharityDetailPage({ params }: { params: Promise<{ id: st
         </Card>
       )}
 
+      {/* Cross-Border Tax Eligibility */}
+      {charity.jurisdictionsEligible && charity.jurisdictionsEligible.length > 0 && (
+        <Card delay={0.4} className="mb-4">
+          <h3 className="text-text-primary font-semibold mb-3">Tax deductibility by country</h3>
+          <div className="space-y-2">
+            {[
+              { code: "FR", name: "France", flag: "🇫🇷" },
+              { code: "GB", name: "United Kingdom", flag: "🇬🇧" },
+              { code: "DE", name: "Germany", flag: "🇩🇪" },
+              { code: "BE", name: "Belgium", flag: "🇧🇪" },
+              { code: "ES", name: "Spain", flag: "🇪🇸" },
+            ].map((country) => {
+              const eligible = charity.jurisdictionsEligible.includes(country.code);
+              const isTge = !eligible && charity.crossBorderMethod === "tge";
+              return (
+                <div key={country.code} className="flex items-center justify-between text-sm py-1">
+                  <span className="text-text-primary font-medium">{country.flag} {country.name}</span>
+                  {eligible ? (
+                    <span className="text-accent-green text-xs font-medium">✓ Deductible</span>
+                  ) : isTge ? (
+                    <span className="text-accent-orange text-xs font-medium">⚠ Via TGE (5% fee)</span>
+                  ) : (
+                    <span className="text-text-secondary/50 text-xs font-medium">✗ Not deductible</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          {charity.crossBorderMethod === "tge" && (
+            <p className="text-text-secondary text-xs font-medium mt-2 italic">
+              Transnational Giving Europe enables tax-deductible donations across borders. A 5% service fee applies.
+            </p>
+          )}
+        </Card>
+      )}
+
       {/* Tax Benefit */}
-      <Card delay={0.4} glow={charity.taxRate === 75 ? "green" : "purple"} className="mb-4">
+      <Card delay={0.45} glow={charity.taxRate === 75 ? "green" : "purple"} className="mb-4">
         <h3 className="text-text-primary font-semibold mb-2">Tax benefit</h3>
         <p className="text-text-secondary text-sm font-medium">
           Donations to {charity.name} qualify for a <span className="text-accent-green font-semibold">{charity.taxRate}%</span> tax credit
           {charity.taxRate === 75 ? " under the Loi Coluche (capped at €2,000)" : ""}.
         </p>
+        {charity.loiColucheEligible && (
+          <Badge variant="yellow" className="mt-2 text-xs">75% Loi Coluche eligible</Badge>
+        )}
       </Card>
 
       {/* Allocation Slider */}

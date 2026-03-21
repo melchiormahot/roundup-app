@@ -41,6 +41,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       howMoneyHelps: charity.howMoneyHelps ? JSON.parse(charity.howMoneyHelps) : [],
       milestones: charity.milestones ? JSON.parse(charity.milestones) : [],
       financialBreakdown: charity.financialBreakdown ? JSON.parse(charity.financialBreakdown) : null,
+      certifications: charity.certifications ? JSON.parse(charity.certifications) : [],
+      jurisdictionsEligible: charity.jurisdictionsEligible ? JSON.parse(charity.jurisdictionsEligible) : [],
     },
     allocation: allocation?.allocationPct ?? 0,
     donatedAmount,
