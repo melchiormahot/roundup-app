@@ -516,17 +516,17 @@ id (text PK), user_id (text FK), current_date (text), day_count (int), notificat
 - [x] Set up Zustand store
 - [x] Create ThemeProvider (dark/light/system) with CSS variable switching
 - [x] Create level system: getUserLevel(), useFeatureAccess() hook
-- [ ] Commit: "Foundation complete"
+- [x] Commit: "Foundation complete"
 
 ### Phase B: Auth + Onboarding
-- [ ] Sign up page
-- [ ] Login page
-- [ ] Auth route protection (proxy.ts)
-- [ ] 4-step onboarding: Welcome → Country → Pick charities (12 shown, grouped) → Done
-- [ ] Country selection shows flag pills, auto-detect
-- [ ] Charity picker groups by "Popular in [country]" + "International"
-- [ ] Confetti on final step only
-- [ ] Commit: "Auth and onboarding complete"
+- [x] Sign up page
+- [x] Login page
+- [x] Auth route protection (proxy.ts)
+- [x] 4-step onboarding: Welcome → Country → Pick charities (12 shown, grouped) → Done
+- [x] Country selection shows flag pills, auto-detect
+- [x] Charity picker groups by "Popular in [country]" + "International"
+- [x] Confetti on final step only
+- [x] Commit: "Auth and onboarding complete"
 
 ### Phase C: Dashboard
 - [ ] Level 1 dashboard: greeting, total (animated, with context), charity list, first-week journey tracker
