@@ -295,19 +295,27 @@ export default function OnboardingPage() {
             {/* Step 2: Tax Preview */}
             {step === 2 && (
               <div className="text-center space-y-6">
-                <h2 ref={headingRef} tabIndex={-1} className="text-2xl font-bold text-text-primary mb-2 outline-none">Your estimated annual tax saving</h2>
+                <h2 ref={headingRef} tabIndex={-1} className="text-2xl font-bold text-text-primary mb-2 outline-none">Your spare change could do this</h2>
                 <motion.div
                   initial={{ scale: 0.5, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ type: "spring", damping: 10, delay: 0.3 }}
+                  className="text-center"
                 >
-                  <CountUp target={taxPreview} />
+                  <p className="text-accent-green text-3xl font-bold mb-1">{Math.round(taxPreview * 1.5 / 0.25)} meals</p>
+                  <p className="text-text-secondary text-sm font-medium">funded through your spare change this year</p>
                 </motion.div>
-                <p className="text-text-secondary text-sm font-medium">
-                  {jurisdictionConfig.previewText(incomeBracket, taxPreview)}
-                </p>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1 }}
+                  className="bg-navy-700 border border-[#1f4070] rounded-2xl p-4"
+                >
+                  <p className="text-accent-blue text-2xl font-bold tabular-nums mb-1">{sym}{taxPreview}</p>
+                  <p className="text-text-secondary text-sm font-medium">saved on your taxes</p>
+                </motion.div>
                 <p className="text-text-secondary/60 text-xs font-medium">
-                  This is an estimate. Actual savings depend on your total donations and applicable ceilings.
+                  Estimates based on your income bracket. Actual savings depend on your total giving.
                 </p>
               </div>
             )}
@@ -489,7 +497,8 @@ export default function OnboardingPage() {
             </Button>
           </div>
 
-          {/* Step dots with ARIA */}
+          {/* Step progress */}
+          <p className="text-center text-text-secondary text-xs font-medium mb-2">Step {step + 1} of {TOTAL_STEPS}</p>
           <div className="flex justify-center gap-2" role="group" aria-label="Onboarding progress">
             {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
               <div

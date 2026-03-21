@@ -7,7 +7,9 @@ import { Badge } from "@/components/ui/Badge";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
 import { getCharityColor } from "@/lib/charityColors";
-import { ChevronDown, ChevronUp, AlertTriangle, Share2, Flame, TrendingUp, TrendingDown, Users } from "lucide-react";
+import { ChevronDown, ChevronUp, AlertTriangle, Share2, TrendingUp, TrendingDown, Users, Target, Heart } from "lucide-react";
+import { WarmGlow, CHARITY_STORIES } from "@/components/WarmGlow";
+import { FirstWeekJourney } from "@/components/FirstWeekJourney";
 
 interface DashboardData {
   userName: string;
@@ -76,6 +78,17 @@ export default function DashboardPage() {
   const [txExpanded, setTxExpanded] = useState(false);
   const [crisisBanner, setCrisisBanner] = useState(true);
   const [colucheCard, setColucheCard] = useState(true);
+  const [showWarmGlow, setShowWarmGlow] = useState(false);
+
+  // Next milestone calculation
+  const MILESTONES = [10, 25, 50, 100, 250, 500, 1000, 1500, 2000];
+  const nextMilestone = data ? MILESTONES.find((m) => m > data.ytdTotal) || null : null;
+  const toNextMilestone = nextMilestone && data ? +(nextMilestone - data.ytdTotal).toFixed(0) : null;
+
+  // Get a story for the top charity
+  const topCharity = data?.charityAllocations.sort((a, b) => b.amountDonated - a.amountDonated)[0];
+  const stories = topCharity ? CHARITY_STORIES[topCharity.charityName] : null;
+  const story = stories?.[Math.floor(Date.now() / 86400000) % stories.length];
 
   useEffect(() => {
     fetch("/api/dashboard")
@@ -99,6 +112,14 @@ export default function DashboardPage() {
 
   return (
     <div className="px-5 pt-14 pb-4 max-w-lg mx-auto page-transition overscroll-contain">
+      {/* Warm Glow Overlay */}
+      <WarmGlow
+        message={data.impactStatement || "Your spare change is making a difference. Really."}
+        brandColor={topCharity ? getCharityColor(topCharity.charityName) : "#5ce0b8"}
+        visible={showWarmGlow}
+        onDismiss={() => setShowWarmGlow(false)}
+      />
+
       {/* Greeting */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -137,6 +158,11 @@ export default function DashboardPage() {
         </AnimatePresence>
       )}
 
+      {/* First Week Journey (only shows for new users) */}
+      {data.givingStreak <= 1 && (
+        <FirstWeekJourney dayCount={data.givingStreak} hasRoundups={data.weekRoundupCount > 0} />
+      )}
+
       {/* Social Proof */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -145,12 +171,12 @@ export default function DashboardPage() {
         className="flex items-center gap-2 mb-4 px-1"
       >
         <Users className="w-3.5 h-3.5 text-accent-blue" />
-        <span className="text-xs text-text-secondary">Join 1,200+ people rounding up this week</span>
+        <span className="text-xs text-text-secondary">{(1247 + Math.floor(Date.now() / 86400000) % 30).toLocaleString()} people giving through RoundUp today</span>
       </motion.div>
 
       {/* YTD Total + Delta */}
       <Card glow="green" delay={0.15} className="mb-4 text-center">
-        <p className="text-text-secondary text-sm mb-1">Year to date donations</p>
+        <p className="text-text-secondary text-sm mb-1">Your giving total</p>
         <AnimatedNumber
           value={data.ytdTotal}
           prefix="€"
@@ -164,7 +190,7 @@ export default function DashboardPage() {
               <TrendingDown className="w-3.5 h-3.5 text-accent-red" />
             )}
             <span className={`text-xs font-medium tabular-nums ${data.weekDelta > 0 ? "text-accent-green" : "text-accent-red"}`}>
-              {data.weekDelta > 0 ? "+" : ""}€{data.weekDelta.toFixed(2)} vs. last week
+              {data.weekDelta > 0 ? "+" : ""}€{data.weekDelta.toFixed(2)} more spare change this week
             </span>
           </div>
         )}
@@ -175,11 +201,11 @@ export default function DashboardPage() {
         <Card delay={0.2} className="mb-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-accent-orange/15 flex items-center justify-center">
-              <Flame className="w-5 h-5 text-accent-orange" />
+              <Heart className="w-5 h-5 text-accent-orange" />
             </div>
             <div>
-              <p className="text-text-primary font-semibold tabular-nums">{data.givingStreak} week streak</p>
-              <p className="text-text-secondary text-xs">Consecutive weeks of active round ups</p>
+              <p className="text-text-primary font-semibold tabular-nums">{data.givingStreak} weeks of giving</p>
+              <p className="text-text-secondary text-xs">Making a difference, week after week</p>
             </div>
           </div>
         </Card>
@@ -250,7 +276,7 @@ export default function DashboardPage() {
             <p className="text-text-primary font-semibold tabular-nums">€{data.weekTotal.toFixed(2)}</p>
           </div>
           <div className="text-right">
-            <p className="text-text-secondary text-xs font-medium">Next debit</p>
+            <p className="text-text-secondary text-xs font-medium">Next round up batch</p>
             <p className="text-text-primary font-semibold">{formatDate(data.nextDebitDate)}</p>
           </div>
         </div>
@@ -332,12 +358,38 @@ export default function DashboardPage() {
         </div>
       </Card>
 
+      {/* Next Milestone */}
+      {nextMilestone && toNextMilestone && toNextMilestone > 0 && (
+        <Card delay={0.45} className="mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-accent-yellow/15 flex items-center justify-center">
+              <Target className="w-5 h-5 text-accent-yellow" />
+            </div>
+            <div className="flex-1">
+              <p className="text-text-primary font-semibold text-sm tabular-nums">€{nextMilestone} milestone</p>
+              <p className="text-text-secondary text-xs font-medium">
+                Just €{toNextMilestone} away{toNextMilestone < 20 ? ". That's about " + Math.ceil(toNextMilestone / 0.5) + " round ups." : ""}
+              </p>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* Story Card (identifiable victim) */}
+      {story && (
+        <Card delay={0.48} className="mb-4">
+          <p className="text-accent-green text-xs font-bold mb-2">A STORY FROM YOUR IMPACT</p>
+          <p className="text-text-secondary text-sm font-medium leading-relaxed italic">"{story.story}"</p>
+        </Card>
+      )}
+
       {/* Monthly Milestone */}
-      <Card delay={0.45} className="mb-4 text-center">
-        <p className="text-text-secondary text-xs font-medium mb-1">March milestone</p>
-        <p className="text-text-primary font-semibold mb-2 tabular-nums">
-          €{data.ytdTotal.toFixed(0)} donated this year
+      <Card delay={0.5} className="mb-4 text-center">
+        <p className="text-text-secondary text-xs font-medium mb-1">Your spare change so far</p>
+        <p className="text-text-primary font-semibold mb-1 tabular-nums">
+          €{data.ytdTotal.toFixed(0)} in giving this year
         </p>
+        <p className="text-text-secondary text-xs font-medium mb-2">That's about €{(data.ytdTotal / Math.max(1, Math.ceil((Date.now() - new Date(new Date().getFullYear(), 0, 1).getTime()) / 86400000))).toFixed(2)} per day</p>
         <button className="inline-flex items-center gap-1.5 text-accent-blue text-xs font-medium min-h-[44px] px-3">
           <Share2 className="w-3.5 h-3.5" />
           Share your impact

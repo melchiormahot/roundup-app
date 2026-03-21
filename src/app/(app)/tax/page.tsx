@@ -167,7 +167,7 @@ export default function TaxPage() {
         <div className="space-y-2 text-sm">
           <div className="flex justify-between"><span className="text-text-secondary font-medium">Jurisdiction</span><span className="text-text-primary">{data.jurisdiction.name}</span></div>
           <div className="flex justify-between"><span className="text-text-secondary font-medium">Income bracket</span><span className="text-text-primary">{data.user.bracketLabel}</span></div>
-          <div className="flex justify-between"><span className="text-text-secondary font-medium">Debit frequency</span><span className="text-text-primary capitalize">{data.user.debitFrequency}</span></div>
+          <div className="flex justify-between"><span className="text-text-secondary font-medium">Round up frequency</span><span className="text-text-primary capitalize">{data.user.debitFrequency}</span></div>
         </div>
       </Card>
     </div>
