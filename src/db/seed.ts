@@ -217,16 +217,17 @@ const charityData = [
 
 db.insert(schema.charities).values(charityData).run();
 
-// Seed jurisdiction tax rules
-db.insert(schema.jurisdictionTaxRules).values({
-  id: nanoid(),
-  countryCode: "FR",
-  standardRate: 66,
-  enhancedRate: 75,
-  enhancedCeiling: 2000,
-  incomeCapPct: 20,
-  receiptFormat: "cerfa_11580",
-}).run();
+// Seed jurisdiction tax rules for all 5 countries
+const taxRules = [
+  { countryCode: "FR", standardRate: 66, enhancedRate: 75, enhancedCeiling: 2000, incomeCapPct: 20, receiptFormat: "cerfa_11580" },
+  { countryCode: "GB", standardRate: 25, enhancedRate: 40, enhancedCeiling: 0, incomeCapPct: 100, receiptFormat: "gift_aid_receipt" },
+  { countryCode: "DE", standardRate: 42, enhancedRate: 42, enhancedCeiling: 0, incomeCapPct: 20, receiptFormat: "zuwendungsbestaetigung" },
+  { countryCode: "BE", standardRate: 45, enhancedRate: 45, enhancedCeiling: 397850, incomeCapPct: 10, receiptFormat: "attestation_281_71" },
+  { countryCode: "ES", standardRate: 40, enhancedRate: 80, enhancedCeiling: 250, incomeCapPct: 10, receiptFormat: "certificado_donacion" },
+];
+for (const rule of taxRules) {
+  db.insert(schema.jurisdictionTaxRules).values({ id: nanoid(), ...rule }).run();
+}
 
 console.log("✅ Database seeded successfully");
 console.log(`  ${charityData.length} charities with full content`);

@@ -5,21 +5,48 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { Check, ChevronRight, ChevronLeft, Building2, Loader2, Shield } from "lucide-react";
+import { getJurisdiction } from "@/lib/tax-engine";
 
 const JURISDICTIONS = [
   { code: "FR", name: "France", flag: "🇫🇷", rate: "66% / 75%" },
-  { code: "GB", name: "United Kingdom", flag: "🇬🇧", rate: "25%" },
+  { code: "GB", name: "United Kingdom", flag: "🇬🇧", rate: "25% Gift Aid" },
   { code: "DE", name: "Germany", flag: "🇩🇪", rate: "Up to 45%" },
   { code: "BE", name: "Belgium", flag: "🇧🇪", rate: "45%" },
-  { code: "ES", name: "Spain", flag: "🇪🇸", rate: "Up to 80%" },
+  { code: "ES", name: "Spain", flag: "🇪🇸", rate: "80% / 40%" },
 ];
 
-const INCOME_BRACKETS = [
-  { value: 0, label: "Under €30,000", taxPreview: 142 },
-  { value: 1, label: "€30,000 to €60,000", taxPreview: 285 },
-  { value: 2, label: "€60,000 to €100,000", taxPreview: 475 },
-  { value: 3, label: "€100,000+", taxPreview: 720 },
-];
+const BRACKET_PREVIEWS: Record<string, { label: string; preview: number }[]> = {
+  FR: [
+    { label: "Under €30,000", preview: 142 },
+    { label: "€30,000 to €60,000", preview: 285 },
+    { label: "€60,000 to €100,000", preview: 475 },
+    { label: "€100,000+", preview: 720 },
+  ],
+  GB: [
+    { label: "Under £25,000", preview: 125 },
+    { label: "£25,000 to £50,270", preview: 125 },
+    { label: "£50,271 to £125,140", preview: 300 },
+    { label: "£125,141+", preview: 375 },
+  ],
+  DE: [
+    { label: "Under €30,000", preview: 150 },
+    { label: "€30,000 to €60,000", preview: 210 },
+    { label: "€60,000 to €100,000", preview: 210 },
+    { label: "€100,000+", preview: 225 },
+  ],
+  BE: [
+    { label: "Under €30,000", preview: 225 },
+    { label: "€30,000 to €60,000", preview: 225 },
+    { label: "€60,000 to €100,000", preview: 225 },
+    { label: "€100,000+", preview: 225 },
+  ],
+  ES: [
+    { label: "Under €20,000", preview: 260 },
+    { label: "€20,000 to €35,000", preview: 260 },
+    { label: "€35,000 to €60,000", preview: 260 },
+    { label: "€60,000+", preview: 260 },
+  ],
+};
 
 const BANKS = [
   { name: "BNP Paribas", color: "#00a651" },
@@ -79,7 +106,10 @@ export default function OnboardingPage() {
     }
   }, [step]);
 
-  const taxPreview = INCOME_BRACKETS[incomeBracket]?.taxPreview || 285;
+  const brackets = BRACKET_PREVIEWS[jurisdiction] || BRACKET_PREVIEWS.FR;
+  const taxPreview = brackets[incomeBracket]?.preview || 285;
+  const jurisdictionConfig = getJurisdiction(jurisdiction);
+  const sym = jurisdictionConfig.currencySymbol;
 
   const canProceed = useCallback(() => {
     switch (step) {
@@ -244,12 +274,12 @@ export default function OnboardingPage() {
                 <div>
                   <p className="text-text-secondary text-xs font-medium mb-2 uppercase tracking-wider">Annual income</p>
                   <div className="space-y-2">
-                    {INCOME_BRACKETS.map((b) => (
+                    {brackets.map((b, idx) => (
                       <button
-                        key={b.value}
-                        onClick={() => setIncomeBracket(b.value)}
+                        key={idx}
+                        onClick={() => setIncomeBracket(idx)}
                         className={`w-full p-3.5 rounded-2xl border text-left transition-all ${
-                          incomeBracket === b.value
+                          incomeBracket === idx
                             ? "bg-accent-blue/10 border-accent-blue"
                             : "bg-navy-700 border-[#1f4070] hover:border-navy-500"
                         }`}
@@ -274,7 +304,7 @@ export default function OnboardingPage() {
                   <CountUp target={taxPreview} />
                 </motion.div>
                 <p className="text-text-secondary text-sm font-medium">
-                  Based on your income bracket and jurisdiction, donating through RoundUp could save you up to <span className="text-accent-green font-semibold">€{taxPreview}</span> per year in tax credits.
+                  {jurisdictionConfig.previewText(incomeBracket, taxPreview)}
                 </p>
                 <p className="text-text-secondary/60 text-xs font-medium">
                   This is an estimate. Actual savings depend on your total donations and applicable ceilings.

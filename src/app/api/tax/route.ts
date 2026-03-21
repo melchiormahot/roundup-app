@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { getSession } from "@/lib/session";
 import { eq } from "drizzle-orm";
-import { roundups, userCharities, charities, users } from "@/db/schema";
+import { roundups, userCharities, charities } from "@/db/schema";
+import { getJurisdiction, calculateDeduction, isCharityEligible } from "@/lib/tax-engine";
 
 export async function GET() {
   const session = await getSession();
@@ -12,9 +13,9 @@ export async function GET() {
 
   const userId = session.userId;
   const user = db.query.users.findFirst({ where: (u, { eq }) => eq(u.id, userId) }).sync();
-  const taxRules = db.query.jurisdictionTaxRules.findFirst({
-    where: (t, { eq }) => eq(t.countryCode, user?.jurisdiction || "FR"),
-  }).sync();
+  const jurisdiction = user?.jurisdiction || "FR";
+  const bracket = user?.incomeBracket || 0;
+  const config = getJurisdiction(jurisdiction);
 
   // YTD roundups
   const yearStart = new Date(new Date().getFullYear(), 0, 1).toISOString();
@@ -41,59 +42,62 @@ export async function GET() {
     .where(eq(userCharities.userId, userId))
     .all();
 
-  const enhancedCeiling = taxRules?.enhancedCeiling || 2000;
+  const totalPct = allocData.reduce((s, a) => s + a.allocationPct, 0);
 
-  // Split by rate
-  const rate75 = allocData
-    .filter((a) => a.taxRate === 75)
-    .map((a) => ({
-      ...a,
-      donated: +(ytdTotal * (a.allocationPct / 100)).toFixed(2),
-    }));
+  // Split donations by rate tier (for France: 75% vs 66%; for others: flat)
+  let enhancedTotal = 0;
+  let standardTotal = 0;
 
-  const rate66 = allocData
-    .filter((a) => a.taxRate === 66)
-    .map((a) => ({
-      ...a,
-      donated: +(ytdTotal * (a.allocationPct / 100)).toFixed(2),
-    }));
+  const charityDetails = allocData.map((a) => {
+    const donated = totalPct > 0 ? +(ytdTotal * (a.allocationPct / totalPct)).toFixed(2) : 0;
+    const eligible = isCharityEligible(a.charityName, jurisdiction);
+    if (a.taxRate === 75 && jurisdiction === "FR") {
+      enhancedTotal += donated;
+    } else {
+      standardTotal += donated;
+    }
+    return { ...a, donated, eligible };
+  });
 
-  const total75 = rate75.reduce((s, a) => s + a.donated, 0);
-  const total66 = rate66.reduce((s, a) => s + a.donated, 0);
+  // For non-FR jurisdictions, all donations go through the same rate
+  if (jurisdiction !== "FR") {
+    enhancedTotal = 0;
+    standardTotal = ytdTotal;
+  }
 
-  const taxSaving75 = Math.min(total75, enhancedCeiling) * 0.75;
-  const taxSaving66 = total66 * 0.66;
-  const totalTaxSaving = +(taxSaving75 + taxSaving66).toFixed(2);
+  const taxResult = calculateDeduction(ytdTotal, enhancedTotal, standardTotal, jurisdiction, bracket);
 
-  // Year-end projection (linear)
+  // Year-end projection
   const dayOfYear = Math.floor(
     (Date.now() - new Date(new Date().getFullYear(), 0, 1).getTime()) / 86400000
   );
   const projectedTotal = dayOfYear > 0 ? +((ytdTotal / dayOfYear) * 365).toFixed(2) : 0;
-  const projectedTaxSaving = +((totalTaxSaving / dayOfYear) * 365).toFixed(2) || 0;
-  const roomToGive = Math.max(0, +(enhancedCeiling - total75).toFixed(2));
+  const projectedResult = calculateDeduction(projectedTotal, projectedTotal * (enhancedTotal / Math.max(ytdTotal, 1)), projectedTotal * (standardTotal / Math.max(ytdTotal, 1)), jurisdiction, bracket);
 
   return NextResponse.json({
-    totalTaxSaving,
-    rate75: {
-      charities: rate75,
-      totalDonated: +total75.toFixed(2),
-      taxSaving: +taxSaving75.toFixed(2),
-      ceiling: enhancedCeiling,
-    },
-    rate66: {
-      charities: rate66,
-      totalDonated: +total66.toFixed(2),
-      taxSaving: +taxSaving66.toFixed(2),
-    },
+    totalTaxSaving: taxResult.totalSaving,
+    tiers: taxResult.tiers,
+    effectiveCostPer10: taxResult.effectiveCostPer10,
+    charities: charityDetails,
     projection: {
       projectedTotal,
-      projectedTaxSaving,
-      roomToGive,
+      projectedTaxSaving: projectedResult.totalSaving,
+      roomToGive: jurisdiction === "FR" ? Math.max(0, +(2000 - enhancedTotal).toFixed(2)) : null,
+    },
+    jurisdiction: {
+      code: config.code,
+      name: config.name,
+      currency: config.currency,
+      currencySymbol: config.currencySymbol,
+      taxLabels: config.taxLabels,
+      receiptLabel: config.receiptLabel,
+      ceilingNote: config.ceilingNote,
+      carryForward: config.carryForward,
     },
     user: {
-      jurisdiction: user?.jurisdiction || "FR",
-      incomeBracket: user?.incomeBracket || 0,
+      jurisdiction,
+      incomeBracket: bracket,
+      bracketLabel: config.brackets[bracket]?.label || "",
       debitFrequency: user?.debitFrequency || "weekly",
     },
   });
