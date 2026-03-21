@@ -81,6 +81,13 @@ export const simulationState = sqliteTable("simulation_state", {
   seed: integer("seed").notNull().default(42),
 });
 
+export const earlyAccess = sqliteTable("early_access", {
+  id: text("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  country: text("country"),
+  createdAt: text("created_at").notNull(),
+});
+
 export const jurisdictionTaxRules = sqliteTable("jurisdiction_tax_rules", {
   id: text("id").primaryKey(),
   countryCode: text("country_code").notNull().unique(),

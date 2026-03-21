@@ -12,7 +12,7 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Public routes that don't need auth
-  const publicPaths = ["/login", "/signup", "/api/auth/login", "/api/auth/signup"];
+  const publicPaths = ["/login", "/signup", "/api/auth/login", "/api/auth/signup", "/api/early-access", "/api/charities"];
   if (publicPaths.some((p) => pathname.startsWith(p))) {
     return NextResponse.next();
   }
