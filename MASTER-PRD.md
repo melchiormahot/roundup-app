@@ -538,16 +538,16 @@ id (text PK), user_id (text FK), current_date (text), day_count (int), notificat
 - [x] Commit: "Dashboard complete with progressive disclosure"
 
 ### Phase D: Charities
-- [ ] Charities browser with search, category filters (7 categories), jurisdiction filter, sort
-- [ ] Charity cards with all badges and status indicators
-- [ ] Charity detail bottom sheet (vaul) with all sections
-- [ ] Impact calculator per charity
-- [ ] Financial transparency bar
-- [ ] Achievement timeline
-- [ ] Identifiable victim stories
-- [ ] Allocation slider (Level 2+)
-- [ ] Cross-border tax eligibility display
-- [ ] Commit: "Charities complete"
+- [x] Charities browser with search, category filters (7 categories), jurisdiction filter, sort
+- [x] Charity cards with all badges and status indicators
+- [x] Charity detail bottom sheet (vaul) with all sections
+- [x] Impact calculator per charity
+- [x] Financial transparency bar
+- [x] Achievement timeline
+- [x] Identifiable victim stories
+- [x] Allocation slider (Level 2+)
+- [x] Cross-border tax eligibility display
+- [x] Commit: "Charities complete"
 
 ### Phase E: Tax Dashboard
 - [ ] Tax dashboard with jurisdiction-aware calculations

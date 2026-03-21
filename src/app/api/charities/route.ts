@@ -37,6 +37,15 @@ export async function GET(request: NextRequest) {
   return Response.json({ local, international });
 }
 
+function parseJson<T>(raw: string | null, fallback: T): T {
+  if (!raw) return fallback;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+}
+
 function formatCharity(c: {
   id: string;
   name: string;
@@ -45,6 +54,10 @@ function formatCharity(c: {
   icon: string | null;
   country_code: string | null;
   brand_color: string | null;
+  tax_rate: number | null;
+  loi_coluche_eligible: number | null;
+  quality_label: string | null;
+  jurisdictions_eligible: string | null;
 }) {
   return {
     id: c.id,
@@ -54,5 +67,9 @@ function formatCharity(c: {
     icon: c.icon,
     countryCode: c.country_code,
     brandColor: c.brand_color,
+    taxRate: c.tax_rate,
+    loiColucheEligible: c.loi_coluche_eligible === 1,
+    qualityLabel: c.quality_label,
+    jurisdictionsEligible: parseJson<string[]>(c.jurisdictions_eligible, []),
   };
 }
