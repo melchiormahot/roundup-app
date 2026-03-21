@@ -2,9 +2,9 @@
 active: true
 iteration: 1
 session_id: 
-max_iterations: 30
-completion_promise: "PWA COMPLETE"
-started_at: "2026-03-21T21:24:19Z"
+max_iterations: 25
+completion_promise: "THEME COMPLETE"
+started_at: "2026-03-21T21:28:09Z"
 ---
 
-Read PRD-pwa-mobile.md and build the PWA with native mobile feel. Follow CLAUDE.md rules. Check off items. Commit after each section and iteration. Output <promise>PWA COMPLETE</promise> when done.
+Read PRD-dark-light-mode.md and build the dark/light mode theming system. Follow CLAUDE.md rules. Check off items. Commit after each section and iteration. Output <promise>THEME COMPLETE</promise> when done.

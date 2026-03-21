@@ -7,9 +7,11 @@ import { Card } from "@/components/ui/Card";
 import { Toggle } from "@/components/ui/Toggle";
 import { Button } from "@/components/ui/Button";
 import { useToastStore } from "@/store";
+import { useTheme } from "@/components/ThemeProvider";
 import {
   Copy, LogOut, RefreshCw, CheckCircle, Building2, FileCheck2,
   ChevronDown, Lock, Play, FastForward, Calendar, Trash2, Loader2,
+  Sun, Moon, Monitor,
   AlertTriangle, User, Zap, Crown,
 } from "lucide-react";
 
@@ -48,6 +50,7 @@ export default function SettingsPage() {
   const [simLoading, setSimLoading] = useState<string | null>(null);
   const [confirmReset, setConfirmReset] = useState(false);
   const [dataExpanded, setDataExpanded] = useState(false);
+  const { theme, setTheme } = useTheme();
   const [notifSettings, setNotifSettings] = useState({
     weeklySummary: true,
     monthlyProgress: true,
@@ -292,6 +295,28 @@ export default function SettingsPage() {
             <div className="flex items-center gap-1 text-accent-green text-xs"><CheckCircle className="w-3.5 h-3.5" /> Active</div>
           </div>
         </div>
+      </Card>
+
+      {/* Theme */}
+      <Card delay={0.25} className="mb-4">
+        <h3 className="text-text-primary font-semibold mb-3">Theme</h3>
+        <div className="flex gap-1 bg-navy-600/20 rounded-xl p-1">
+          {([["dark", Moon, "Dark"], ["light", Sun, "Light"], ["system", Monitor, "System"]] as const).map(([value, Icon, label]) => (
+            <button
+              key={value}
+              onClick={() => setTheme(value)}
+              className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-semibold transition-all min-h-[44px] ${
+                theme === value ? "bg-accent-blue text-navy-900" : "text-text-secondary hover:text-text-primary"
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              {label}
+            </button>
+          ))}
+        </div>
+        {theme === "system" && (
+          <p className="text-text-secondary text-xs font-medium mt-2">Follows your device settings</p>
+        )}
       </Card>
 
       {/* Notifications */}

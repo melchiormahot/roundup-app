@@ -31,9 +31,10 @@ export function Card({ children, className = "", onClick, glow, delay = 0 }: Car
       role={interactive ? "button" : undefined}
       tabIndex={interactive ? 0 : undefined}
       onKeyDown={interactive ? handleKeyDown : undefined}
-      className={`bg-navy-700 border border-[#1f4070] rounded-[16px] p-5 ${glowClass} ${
+      className={`bg-navy-700 rounded-[16px] p-5 ${glowClass} ${
         interactive ? "cursor-pointer active:scale-[0.98] transition-transform" : ""
       } ${className}`}
+      style={{ border: "var(--t-card-border)", boxShadow: "var(--t-card-shadow)" }}
     >
       {children}
     </motion.div>

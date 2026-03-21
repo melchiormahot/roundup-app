@@ -1,20 +1,67 @@
 @import "tailwindcss";
 
+/* Theme variables: dark (default) and light */
+:root, [data-theme="dark"] {
+  --t-bg-primary: #060e1a;
+  --t-bg-secondary: #0b1628;
+  --t-bg-card: #0f1f38;
+  --t-bg-card-inner: rgba(21, 42, 74, 0.2);
+  --t-border: #1f4070;
+  --t-border-subtle: #152a4a;
+  --t-text-primary: #d0dff0;
+  --t-text-secondary: #7a9cc6;
+  --t-text-dim: #3d5a80;
+  --t-accent-green: #5ce0b8;
+  --t-accent-blue: #4a9eff;
+  --t-accent-purple: #b48eff;
+  --t-accent-red: #ff6b6b;
+  --t-accent-yellow: #ffd93d;
+  --t-accent-orange: #ff9a76;
+  --t-progress-track: #0d1f35;
+  --t-nav-bg: rgba(10, 18, 32, 0.92);
+  --t-shadow: rgba(0, 0, 0, 0.3);
+  --t-card-shadow: none;
+  --t-card-border: 1px solid #1f4070;
+}
+
+[data-theme="light"] {
+  --t-bg-primary: #f5f7fa;
+  --t-bg-secondary: #ffffff;
+  --t-bg-card: #ffffff;
+  --t-bg-card-inner: #f0f2f5;
+  --t-border: #e2e6ec;
+  --t-border-subtle: #d0d5dc;
+  --t-text-primary: #1a1f2e;
+  --t-text-secondary: #5a6578;
+  --t-text-dim: #9aa3b2;
+  --t-accent-green: #0da678;
+  --t-accent-blue: #2563eb;
+  --t-accent-purple: #7c3aed;
+  --t-accent-red: #dc2626;
+  --t-accent-yellow: #d97706;
+  --t-accent-orange: #ea580c;
+  --t-progress-track: #e5e7eb;
+  --t-nav-bg: rgba(255, 255, 255, 0.92);
+  --t-shadow: rgba(0, 0, 0, 0.08);
+  --t-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --t-card-border: 1px solid #e2e6ec;
+}
+
 @theme inline {
-  --color-navy-900: #060e1a;
-  --color-navy-800: #0b1628;
-  --color-navy-700: #0f1f38;
-  --color-navy-600: #152a4a;
-  --color-navy-500: #1a3050;
-  --color-navy-400: #1f3a5f;
-  --color-text-primary: #d0dff0;
-  --color-text-secondary: #7a9cc6;
-  --color-accent-green: #5ce0b8;
-  --color-accent-blue: #4a9eff;
-  --color-accent-purple: #b48eff;
-  --color-accent-red: #ff6b6b;
-  --color-accent-yellow: #ffd93d;
-  --color-accent-orange: #ff9a76;
+  --color-navy-900: var(--t-bg-primary);
+  --color-navy-800: var(--t-bg-secondary);
+  --color-navy-700: var(--t-bg-card);
+  --color-navy-600: var(--t-border-subtle);
+  --color-navy-500: var(--t-border);
+  --color-navy-400: var(--t-border);
+  --color-text-primary: var(--t-text-primary);
+  --color-text-secondary: var(--t-text-secondary);
+  --color-accent-green: var(--t-accent-green);
+  --color-accent-blue: var(--t-accent-blue);
+  --color-accent-purple: var(--t-accent-purple);
+  --color-accent-red: var(--t-accent-red);
+  --color-accent-yellow: var(--t-accent-yellow);
+  --color-accent-orange: var(--t-accent-orange);
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
@@ -24,20 +71,25 @@
 
 html, body {
   height: 100%;
-  background: #060e1a;
-  color: #d0dff0;
+  background: var(--t-bg-primary);
+  color: var(--t-text-primary);
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-/* Custom scrollbar for dark theme */
+/* Theme transition (only when user toggles, not on load) */
+.theme-transitioning, .theme-transitioning * {
+  transition: background-color 0.3s ease, border-color 0.3s ease !important;
+}
+
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0b1628;
+  background: var(--t-bg-secondary);
 }
 ::-webkit-scrollbar-thumb {
-  background: #1a3050;
+  background: var(--t-border);
   border-radius: 3px;
 }
 
