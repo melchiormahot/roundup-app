@@ -108,6 +108,33 @@ html, body {
   overscroll-behavior-y: contain;
 }
 
+/* PWA: prevent text selection on interactive elements */
+.select-none button, .select-none [role="button"] {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* PWA: prevent image dragging */
+img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+/* PWA: disable overscroll on html for standalone mode */
+html {
+  overscroll-behavior: none;
+}
+
+/* PWA: safe area for standalone mode */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
 /* Type scale: consistent 8pt grid spacing */
 /* 48px: hero numbers, 24px: page titles, 18px: section headers, 15px: body, 13px: secondary, 12px: minimum labels */
 
