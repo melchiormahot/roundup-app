@@ -584,10 +584,10 @@ id (text PK), user_id (text FK), current_date (text), day_count (int), notificat
 - [x] Commit: "Landing page complete"
 
 ### Phase I: Admin Dashboard
-- [ ] All 9 admin pages with charts and tables
-- [ ] KPI bar, user progression tracking
-- [ ] CSV export, snapshot feature
-- [ ] Commit: "Admin dashboard complete"
+- [x] All 9 admin pages with charts and tables
+- [x] KPI bar, user progression tracking
+- [x] CSV export, snapshot feature
+- [x] Commit: "Admin dashboard complete"
 
 ### Phase J: PWA
 - [ ] manifest.json, icons, splash screens
