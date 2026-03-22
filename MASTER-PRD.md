@@ -578,10 +578,10 @@ id (text PK), user_id (text FK), current_date (text), day_count (int), notificat
 - [x] Commit: "Simulation engine complete"
 
 ### Phase H: Landing Page
-- [ ] Full landing page with all sections (hero, how it works, live demo, tax calculator, charity showcase, comparison, numbers, social proof, FAQ, CTA, footer)
-- [ ] Early access email capture
-- [ ] SEO (meta tags, Open Graph, JSON-LD, sitemap)
-- [ ] Commit: "Landing page complete"
+- [x] Full landing page with all sections (hero, how it works, live demo, tax calculator, charity showcase, comparison, numbers, social proof, FAQ, CTA, footer)
+- [x] Early access email capture
+- [x] SEO (meta tags, Open Graph, JSON-LD, sitemap)
+- [x] Commit: "Landing page complete"
 
 ### Phase I: Admin Dashboard
 - [ ] All 9 admin pages with charts and tables
