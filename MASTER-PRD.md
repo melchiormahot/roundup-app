@@ -590,14 +590,14 @@ id (text PK), user_id (text FK), current_date (text), day_count (int), notificat
 - [x] Commit: "Admin dashboard complete"
 
 ### Phase J: PWA
-- [ ] manifest.json, icons, splash screens
-- [ ] Service worker with caching
-- [ ] Install prompt
-- [ ] Gesture navigation (swipe tabs, pull-to-refresh)
-- [ ] Haptic feedback system
-- [ ] Directional transitions
-- [ ] Offline support
-- [ ] Commit: "PWA complete"
+- [x] manifest.json, icons, splash screens
+- [x] Service worker with caching
+- [x] Install prompt
+- [x] Gesture navigation (swipe tabs, pull-to-refresh)
+- [x] Haptic feedback system
+- [x] Directional transitions
+- [x] Offline support
+- [x] Commit: "PWA complete"
 
 ### Phase K: Polish
 - [ ] WCAG contrast audit in both themes

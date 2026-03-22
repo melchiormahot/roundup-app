@@ -1,8 +1,15 @@
-const CACHE_NAME = "roundup-v1";
-const STATIC_ASSETS = ["/", "/dashboard", "/charities", "/tax", "/notifications", "/settings"];
+const CACHE_NAME = 'roundup-v1';
+const STATIC_ASSETS = [
+  '/dashboard',
+  '/charities',
+  '/tax',
+  '/notifications',
+  '/settings',
+  '/offline',
+];
 
 // Install: cache app shell
-self.addEventListener("install", (event) => {
+self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
   );
@@ -10,7 +17,7 @@ self.addEventListener("install", (event) => {
 });
 
 // Activate: clean old caches
-self.addEventListener("activate", (event) => {
+self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
@@ -19,35 +26,31 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Fetch: network-first for API, cache-first for static assets
-self.addEventListener("fetch", (event) => {
-  const url = new URL(event.request.url);
+// Fetch: network-first for API, cache-first for static
+self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  const url = new URL(request.url);
 
-  // API calls: network-first
-  if (url.pathname.startsWith("/api/")) {
+  if (url.pathname.startsWith('/api/')) {
+    // Network first for API
     event.respondWith(
-      fetch(event.request)
+      fetch(request)
         .then((response) => {
           const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
           return response;
         })
-        .catch(() => caches.match(event.request))
+        .catch(() => caches.match(request))
     );
-    return;
+  } else if (request.destination === 'image' || request.destination === 'style' || request.destination === 'script') {
+    // Cache first for static assets
+    event.respondWith(
+      caches.match(request).then((cached) => cached || fetch(request))
+    );
+  } else {
+    // Network first for pages
+    event.respondWith(
+      fetch(request).catch(() => caches.match(request).then((cached) => cached || caches.match('/offline')))
+    );
   }
-
-  // Static assets: cache-first
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(event.request).then((response) => {
-        if (response.status === 200) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-        }
-        return response;
-      });
-    })
-  );
 });
