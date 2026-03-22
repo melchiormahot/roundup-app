@@ -11,8 +11,8 @@
   --border-primary: #33302b;
   --border-secondary: #3d3833;
   --text-primary: #e7e5e4;
-  --text-secondary: #a8a29e;
-  --text-dim: #78716c;
+  --text-secondary: #b8b2ad;
+  --text-dim: #b0aaa5;
   --accent-green: #86efac;
   --accent-blue: #60a5fa;
   --accent-purple: #c084fc;
@@ -156,6 +156,12 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--text-dim);
+}
+
+/* ─── Card theme transitions ─────────────────────────────────────── */
+
+.rounded-2xl {
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* ─── Selection ───────────────────────────────────────────────────── */

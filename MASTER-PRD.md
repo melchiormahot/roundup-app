@@ -600,15 +600,15 @@ id (text PK), user_id (text FK), current_date (text), day_count (int), notificat
 - [x] Commit: "PWA complete"
 
 ### Phase K: Polish
-- [ ] WCAG contrast audit in both themes
-- [ ] Touch target verification (44px minimum)
-- [ ] Mobile test at 375px on every screen
-- [ ] Theme transition smoothness
-- [ ] No flash of wrong theme on load
-- [ ] All animations respect prefers-reduced-motion
-- [ ] All numbers have context (never alone)
-- [ ] All copy follows behavioral design and language rules
-- [ ] Commit: "Polish complete"
+- [x] WCAG contrast audit in both themes
+- [x] Touch target verification (44px minimum)
+- [x] Mobile test at 375px on every screen
+- [x] Theme transition smoothness
+- [x] No flash of wrong theme on load
+- [x] All animations respect prefers-reduced-motion
+- [x] All numbers have context (never alone)
+- [x] All copy follows behavioral design and language rules
+- [x] Commit: "Polish complete"
 
 ### Phase L: Final Review
 - [ ] Full flow: landing page → signup → onboard → simulate 3 months → check every screen → download PDF

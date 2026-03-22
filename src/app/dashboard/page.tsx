@@ -306,7 +306,7 @@ export default function DashboardPage() {
                     <p className="text-sm font-semibold text-text-primary">{data.activeCrisis.name}</p>
                     <p className="mt-0.5 text-xs text-text-secondary">{data.activeCrisis.description}</p>
                     <button
-                      className="mt-2 text-xs font-semibold"
+                      className="mt-2 min-h-[44px] text-xs font-semibold"
                       style={{ color: 'var(--accent-orange)' }}
                     >
                       Redirect round-ups
@@ -362,7 +362,7 @@ export default function DashboardPage() {
                         </p>
                       </div>
                       <button
-                        className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors"
+                        className="flex min-h-[44px] items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors"
                         style={{
                           backgroundColor: 'var(--bg-card-inner)',
                           color: 'var(--text-secondary)',

@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 
 const microStats = [
-  { value: '\u20AC2,000+', label: 'donated' },
+  { value: '\u20AC2,000+', label: 'contributed' },
   { value: '75%', label: 'tax return' },
   { value: '2 min', label: 'setup' },
 ];
@@ -262,7 +262,7 @@ export function Hero() {
                   marginBottom: '4px',
                 }}
               >
-                Total donated
+                Total contributed
               </div>
               <div
                 style={{

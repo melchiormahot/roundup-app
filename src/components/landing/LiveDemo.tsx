@@ -250,7 +250,7 @@ export function LiveDemo() {
                       color: 'var(--text-dim)',
                     }}
                   >
-                    \u20AC0.70 donated
+                    \u20AC0.70 contributed
                   </div>
                 </div>
                 <motion.div

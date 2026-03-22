@@ -13,17 +13,17 @@ const faqs = [
   {
     question: 'Which charities can I support?',
     answer:
-      'We partner with over 45 verified charities across France, the UK, Germany, Belgium, and Spain. From humanitarian aid organizations like M\u00E9decins Sans Fronti\u00E8res to environmental groups like WWF, you can split your donations across multiple causes that matter to you.',
+      'We partner with over 45 verified charities across France, the UK, Germany, Belgium, and Spain. From humanitarian aid organizations like M\u00E9decins Sans Fronti\u00E8res to environmental groups like WWF, you can split your spare change across multiple causes that matter to you.',
   },
   {
-    question: 'How much does it cost me?',
+    question: 'Is RoundUp free to use?',
     answer:
-      'RoundUp is completely free to use. There are no subscription fees, no hidden charges, and no commissions on your donations. 100% of your round ups go directly to the charities you select.',
+      'RoundUp is completely free to use. There are no subscription fees, no hidden charges, and no commissions on your contributions. 100% of your round ups go directly to the charities you select.',
   },
   {
     question: 'How do tax deductions work?',
     answer:
-      'In France, donations to qualifying charities are eligible for a 75% tax credit on the first \u20AC2,000 donated under the Loi Coluche. This means if you donate \u20AC180 in a year, you could get \u20AC135 back on your taxes. We generate your official tax certificates automatically.',
+      'In France, contributions to qualifying charities are eligible for a 75% tax credit on the first \u20AC2,000 contributed under the Loi Coluche. This means if you contribute \u20AC180 in a year, you could get \u20AC135 back on your taxes. We generate your official tax certificates automatically.',
   },
   {
     question: 'Is my data secure?',
@@ -43,7 +43,7 @@ const faqs = [
   {
     question: 'How do I get my tax documents?',
     answer:
-      'At the end of each fiscal year, we automatically generate your official tax certificates (cerfa in France) that you can download as PDF from your dashboard. You can also access a running summary of your donations and projected deductions at any time.',
+      'At the end of each fiscal year, we automatically generate your official tax certificates (cerfa in France) that you can download as PDF from your dashboard. You can also access a running summary of your contributions and projected deductions at any time.',
   },
 ];
 

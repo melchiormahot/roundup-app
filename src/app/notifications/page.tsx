@@ -36,6 +36,7 @@ const TYPE_COLORS: Record<string, string> = {
   milestone: 'var(--accent-yellow)',
   crisis: 'var(--accent-red)',
   charity_update: 'var(--accent-purple)',
+  contribution_processed: 'var(--accent-green)',
   debit_processed: 'var(--accent-green)',
 };
 
@@ -219,7 +220,7 @@ export default function NotificationsPage() {
               {hasUnread && (
                 <button
                   onClick={markAllRead}
-                  className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-150"
+                  className="flex min-h-[44px] items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-150"
                   style={{
                     color: 'var(--accent-blue)',
                     backgroundColor: 'transparent',

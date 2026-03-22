@@ -340,7 +340,7 @@ export function CharityDetail({
                     className="mb-3 text-sm font-semibold uppercase tracking-wide"
                     style={{ color: 'var(--text-secondary)' }}
                   >
-                    How your money helps
+                    How your spare change helps
                   </h3>
                   <div className="relative ml-4 border-l-2" style={{ borderColor: 'var(--border-primary)' }}>
                     {charity.howYourMoneyHelps.map((tier, i) => (
@@ -389,6 +389,8 @@ export function CharityDetail({
                   <div
                     className="mb-2 overflow-hidden rounded-full"
                     style={{ height: 12 }}
+                    role="img"
+                    aria-label={`Programs ${charity.financialTransparency.programs_pct}%, Admin ${charity.financialTransparency.admin_pct}%, Fundraising ${charity.financialTransparency.fundraising_pct}%`}
                   >
                     <div className="flex h-full">
                       <div
@@ -490,7 +492,7 @@ export function CharityDetail({
                         >
                           {impact.count}
                         </span>{' '}
-                        times: {impact.description}
+                        {impact.count === 1 ? 'instance' : 'instances'} of {impact.description}
                       </p>
                     </div>
                   </section>

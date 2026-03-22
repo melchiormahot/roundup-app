@@ -232,6 +232,11 @@ function BreakdownCard({
       </div>
       <div className="mt-3">
         <div
+          role="progressbar"
+          aria-valuenow={Math.round(progress)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label={`${label} deduction progress`}
           className="h-2 w-full overflow-hidden rounded-full"
           style={{ backgroundColor: 'var(--progress-track)' }}
         >
@@ -514,7 +519,7 @@ export default function TaxDashboardPage() {
                   />
                 </div>
                 <p className="mt-1 text-sm text-text-secondary">
-                  On {fmtCurrency(data.totalDonated, cSymbol)} donated this year
+                  On {fmtCurrency(data.totalDonated, cSymbol)} contributed this year
                 </p>
                 {/* Blue decorative glow */}
                 <div
@@ -629,7 +634,7 @@ export default function TaxDashboardPage() {
                 </div>
                 <div className="mt-3 flex items-baseline gap-6">
                   <div>
-                    <p className="text-xs text-text-dim">Projected donations</p>
+                    <p className="text-xs text-text-dim">Projected contributions</p>
                     <p className="text-lg font-bold text-text-primary">
                       {fmtCurrency(data.projection.totalDonations, cSymbol)}
                     </p>

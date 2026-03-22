@@ -614,7 +614,7 @@ export default function SettingsPage() {
               />
               <ProfileCard
                 name="Thomas"
-                description="Active donor, 45 days"
+                description="Active giver, 45 days"
                 selected={selectedProfile === 'thomas'}
                 loading={simulateLoading === 'profile-thomas'}
                 onClick={() =>
@@ -752,7 +752,7 @@ export default function SettingsPage() {
                   </li>
                   <li>
                     <strong style={{ color: 'var(--text-primary)' }}>Charity preferences</strong>{' '}
-                    so we know where to direct your donations
+                    so we know where to direct your spare change
                   </li>
                 </ul>
                 <p className="mt-3" style={{ color: 'var(--text-dim)' }}>
@@ -873,7 +873,7 @@ export default function SettingsPage() {
                 </p>
                 <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
                   This will permanently delete all your data, charity preferences,
-                  and donation history. This action cannot be undone.
+                  and contribution history. This action cannot be undone.
                 </p>
                 <div className="flex gap-2">
                   <Button

@@ -6,11 +6,11 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'RoundUp - Give effortlessly. Save on taxes.',
   description:
-    'Round up your everyday purchases and donate the spare change to curated charities. Track your impact and save on taxes.',
+    'Round up your everyday purchases and give the spare change to curated charities. Track your impact and save on taxes.',
   openGraph: {
     title: 'RoundUp - Give effortlessly. Save on taxes.',
     description:
-      'Round up your everyday purchases and donate the spare change to curated charities.',
+      'Round up your everyday purchases and give the spare change to curated charities.',
     type: 'website',
   },
 };

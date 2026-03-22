@@ -13,7 +13,7 @@ const testimonials = [
   {
     name: 'Thomas D.',
     location: 'Lyon',
-    text: 'The tax deduction alone pays for itself. I donated \u20AC180 last year and got \u20AC135 back on my taxes. It is basically free giving.',
+    text: 'The tax deduction alone pays for itself. I contributed \u20AC180 last year and got \u20AC135 back on my taxes. It is basically free giving.',
     rating: 5,
   },
   {
@@ -26,7 +26,7 @@ const testimonials = [
 
 const counters = [
   { icon: Users, value: '12,400+', label: 'users' },
-  { icon: HandHeart, value: '\u20AC850,000+', label: 'donated' },
+  { icon: HandHeart, value: '\u20AC850,000+', label: 'contributed' },
   { icon: Building2, value: '45', label: 'charities' },
 ];
 

@@ -826,8 +826,11 @@ function StepDone({
   onContinue: () => void;
   saving: boolean;
 }) {
-  /* Fire confetti on mount */
+  /* Fire confetti on mount (skip if user prefers reduced motion) */
   useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
     const duration = 2500;
     const end = Date.now() + duration;
 

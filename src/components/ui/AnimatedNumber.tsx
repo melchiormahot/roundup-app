@@ -25,8 +25,19 @@ export function AnimatedNumber({
   const rafRef = useRef<number>(0);
   const startRef = useRef<number | null>(null);
   const fromRef = useRef(0);
+  const prefersReducedMotion = useRef(false);
 
   useEffect(() => {
+    prefersReducedMotion.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }, []);
+
+  useEffect(() => {
+    // Skip animation if user prefers reduced motion
+    if (prefersReducedMotion.current) {
+      setDisplay(value);
+      return;
+    }
+
     fromRef.current = display;
     startRef.current = null;
 

@@ -251,7 +251,7 @@ export function TaxCalculator() {
                 letterSpacing: '0.06em',
               }}
             >
-              Monthly donation
+              Monthly round-ups
             </label>
             <div
               style={{
@@ -266,6 +266,7 @@ export function TaxCalculator() {
                   onClick={() => setMonthly(d)}
                   style={{
                     padding: '10px 20px',
+                    minHeight: 44,
                     borderRadius: '12px',
                     border: monthly === d
                       ? '2px solid var(--accent-green)'
@@ -322,7 +323,7 @@ export function TaxCalculator() {
                   fontWeight: 500,
                 }}
               >
-                You donate
+                You contribute
               </div>
               <div
                 style={{

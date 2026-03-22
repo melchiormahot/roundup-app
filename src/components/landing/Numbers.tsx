@@ -60,7 +60,7 @@ const numbers = [
     target: 75,
     prefix: '',
     suffix: '%',
-    label: 'Returned on qualifying donations',
+    label: 'Returned on qualifying contributions',
     color: 'var(--accent-blue)',
   },
   {
