@@ -611,10 +611,10 @@ id (text PK), user_id (text FK), current_date (text), day_count (int), notificat
 - [x] Commit: "Polish complete"
 
 ### Phase L: Final Review
-- [ ] Full flow: landing page → signup → onboard → simulate 3 months → check every screen → download PDF
-- [ ] Test all 5 jurisdictions
-- [ ] Test all 3 demo profiles
-- [ ] Test dark mode and light mode on every screen
-- [ ] Test on mobile (375px)
-- [ ] Verify admin dashboard with simulated data
-- [ ] Commit: "RoundUp v2 complete"
+- [x] Full flow: landing page → signup → onboard → simulate 3 months → check every screen → download PDF
+- [x] Test all 5 jurisdictions
+- [x] Test all 3 demo profiles
+- [x] Test dark mode and light mode on every screen
+- [x] Test on mobile (375px)
+- [x] Verify admin dashboard with simulated data
+- [x] Commit: "RoundUp v2 complete"

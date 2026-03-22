@@ -209,17 +209,17 @@ export const DEMO_PROFILES: Record<string, DemoProfile> = {
 // ─── Utility Functions ──────────────────────────────────────────────────────
 
 export function addDays(dateStr: string, days: number): string {
-  const d = new Date(dateStr);
-  d.setDate(d.getDate() + days);
+  const d = new Date(dateStr + 'T12:00:00Z'); // Use noon UTC to avoid DST issues
+  d.setUTCDate(d.getUTCDate() + days);
   return d.toISOString().split('T')[0];
 }
 
 function getMonth(dateStr: string): number {
-  return new Date(dateStr).getMonth() + 1; // 1-based
+  return new Date(dateStr + 'T12:00:00Z').getUTCMonth() + 1; // 1-based
 }
 
 function getDayOfWeek(dateStr: string): number {
-  return new Date(dateStr).getDay(); // 0=Sunday, 6=Saturday
+  return new Date(dateStr + 'T12:00:00Z').getUTCDay(); // 0=Sunday, 6=Saturday
 }
 
 function isWeekend(dateStr: string): boolean {
@@ -653,25 +653,33 @@ export function updateUserLevel(
     ? JSON.parse(user.levelUnlockedAt)
     : {};
 
-  const currentLevel = user.userLevel ?? 1;
+  let currentLevel = user.userLevel ?? 1;
+  let advanced = false;
 
+  // Try to advance level. In simulation, each day call may advance one level.
   const newLevel = calculateUserLevel({
     daysSinceCreation,
     totalDonated,
     currentLevel,
     levelUnlockedAt,
+    referenceDate: simDate,
   });
 
   if (newLevel > currentLevel) {
     levelUnlockedAt[newLevel] = simDateStr;
+    currentLevel = newLevel;
+    advanced = true;
+  }
+
+  if (advanced) {
     db.update(users)
       .set({
-        user_level: newLevel,
+        user_level: currentLevel,
         level_unlocked_at: JSON.stringify(levelUnlockedAt),
       })
       .where(eq(users.id, userId))
       .run();
-    return newLevel;
+    return currentLevel;
   }
 
   return null;
@@ -896,12 +904,13 @@ export function simulateDays(options: SimulateOptions): SimulationSummary {
     const levelChange = updateUserLevel(userId, totalDonatedNow, currentDate);
     if (levelChange !== null) {
       lastLevelChange = levelChange;
-      createNotificationForce(
-        userId,
-        'milestone',
-        `Level ${levelChange} Unlocked!`,
-        `You have reached level ${levelChange}! New features are now available.`,
-      );
+      const levelMessages: Record<number, { title: string; body: string }> = {
+        2: { title: 'New features available', body: 'You can now track your tax savings and see weekly summaries. Check out what is new!' },
+        3: { title: 'More ways to give', body: 'Impact stories, consistency tracking, and more are now available for you.' },
+        4: { title: 'Full experience unlocked', body: 'PDF tax documents, referral codes, and the complete charity catalogue are now yours.' },
+      };
+      const msg = levelMessages[levelChange] || { title: 'Something new awaits', body: 'Check out the latest features available to you.' };
+      createNotificationForce(userId, 'milestone', msg.title, msg.body);
       totalNotifications++;
     }
 

@@ -19,3 +19,8 @@ _(This file is updated after every correction or mistake. Review at session star
 **Rule:** Dynamic route params must be awaited: `const { id } = await params`.
 **Why:** In Next.js 16, `params` is a Promise in route handlers and page components.
 **How to apply:** Use `{ params }: { params: Promise<{ id: string }> }` type and `await params` before accessing properties.
+
+## JavaScript Date: use UTC methods for date-only strings
+**Rule:** When manipulating date-only strings (YYYY-MM-DD), always use UTC methods (getUTCDate, setUTCDate, getUTCMonth) and append 'T12:00:00Z' when constructing Date objects.
+**Why:** `new Date('2026-03-29')` creates a UTC midnight Date, but `getDate()`/`setDate()` use local time. During DST spring-forward (e.g., March 29 in CET), `addDays` can return the same date, creating infinite loops in simulation code.
+**How to apply:** Use `new Date(dateStr + 'T12:00:00Z')` and `d.getUTCDate()` / `d.setUTCDate()` for all date arithmetic on date-only strings.

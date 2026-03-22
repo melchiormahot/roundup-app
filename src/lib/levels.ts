@@ -126,17 +126,13 @@ export function calculateUserLevel(params: {
   totalDonated: number;
   currentLevel: number;
   levelUnlockedAt: Record<number, string>; // JSON timestamps keyed by level
+  referenceDate?: Date; // for simulation: the simulated "now"
 }): number {
-  const { daysSinceCreation, totalDonated, currentLevel, levelUnlockedAt } =
+  const { daysSinceCreation, totalDonated, currentLevel, levelUnlockedAt, referenceDate } =
     params;
 
-  // Start from current level (never go down)
-  let newLevel = currentLevel;
-
-  // Check if we can advance to the next level
-  const candidateLevel = currentLevel + 1;
-
   // Only advance one level at a time
+  const candidateLevel = currentLevel + 1;
   if (candidateLevel > 4) return currentLevel;
 
   const [minDays, minDonated] = LEVEL_THRESHOLDS[candidateLevel - 1];
@@ -150,7 +146,7 @@ export function calculateUserLevel(params: {
   const lastLevelTimestamp = levelUnlockedAt[currentLevel];
   if (lastLevelTimestamp) {
     const lastUnlocked = new Date(lastLevelTimestamp).getTime();
-    const now = Date.now();
+    const now = referenceDate ? referenceDate.getTime() : Date.now();
     const daysSinceLastUnlock = (now - lastUnlocked) / (1000 * 60 * 60 * 24);
 
     if (daysSinceLastUnlock < 7) {
@@ -158,6 +154,5 @@ export function calculateUserLevel(params: {
     }
   }
 
-  newLevel = candidateLevel;
-  return newLevel;
+  return candidateLevel;
 }

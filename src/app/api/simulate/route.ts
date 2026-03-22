@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 import { getIronSession } from 'iron-session';
 import { sessionOptions, SessionData } from '@/lib/session';
 import { db } from '@/db';
-import { users, simulation_state } from '@/db/schema';
+import { users, simulation_state, user_charities, charities } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import { createNotificationForce } from '@/lib/notifications';
@@ -69,9 +69,33 @@ export async function POST(request: Request) {
   const currentDayCount = simState?.day_count ?? 0;
   const style = (simState?.notification_style ?? 'warm') as 'factual' | 'warm' | 'motivational';
 
+  // Ensure user has charities before simulating
+  function ensureUserHasCharities(count = 3) {
+    const existing = db.select().from(user_charities).where(eq(user_charities.user_id, userId)).all();
+    if (existing.length > 0) return;
+    const userRow = db.select({ jurisdiction: users.jurisdiction }).from(users).where(eq(users.id, userId)).get();
+    const jurisdiction = userRow?.jurisdiction || 'FR';
+    const allCharities = db.select().from(charities).all();
+    const available = allCharities.filter((c) => {
+      const dc = JSON.parse(c.display_countries || '[]');
+      return dc.includes(jurisdiction);
+    });
+    const toAssign = available.slice(0, count);
+    const pctEach = Math.floor(100 / toAssign.length);
+    toAssign.forEach((c, i) => {
+      db.insert(user_charities).values({
+        id: nanoid(),
+        user_id: userId,
+        charity_id: c.id,
+        allocation_pct: i === toAssign.length - 1 ? 100 - pctEach * (toAssign.length - 1) : pctEach,
+      }).run();
+    });
+  }
+
   switch (action) {
     // ─── Simulate One Day ─────────────────────────────────────────────────────
     case 'day': {
+      ensureUserHasCharities();
       const summary = simulateDays({
         userId,
         daysToSimulate: 1,
@@ -85,6 +109,7 @@ export async function POST(request: Request) {
 
     // ─── Simulate One Week ────────────────────────────────────────────────────
     case 'week': {
+      ensureUserHasCharities();
       const summary = simulateDays({
         userId,
         daysToSimulate: 7,
@@ -98,6 +123,7 @@ export async function POST(request: Request) {
 
     // ─── Simulate One Month ───────────────────────────────────────────────────
     case 'month': {
+      ensureUserHasCharities();
       const summary = simulateDays({
         userId,
         daysToSimulate: 30,
@@ -111,6 +137,7 @@ export async function POST(request: Request) {
 
     // ─── Simulate to Year End ─────────────────────────────────────────────────
     case 'year-end': {
+      ensureUserHasCharities();
       // Calculate days remaining until Dec 31 of the current sim year
       const simYear = new Date(currentDate).getFullYear();
       const dec31 = `${simYear}-12-31`;
@@ -185,6 +212,9 @@ export async function POST(request: Request) {
 
       // Reset all data first
       resetSimulationData(userId);
+
+      // Ensure user has charities assigned (needed for allocation)
+      ensureUserHasCharities(p.charityCount);
 
       // Get user created_at for the start date
       const user = db
