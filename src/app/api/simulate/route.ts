@@ -2,49 +2,17 @@ import { cookies } from 'next/headers';
 import { getIronSession } from 'iron-session';
 import { sessionOptions, SessionData } from '@/lib/session';
 import { db } from '@/db';
-import { users, roundups, simulation_state, notifications } from '@/db/schema';
+import { users, simulation_state } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-const MERCHANTS = [
-  { name: 'Monoprix', category: 'groceries' },
-  { name: 'Carrefour', category: 'groceries' },
-  { name: 'SNCF', category: 'transport' },
-  { name: 'Uber', category: 'transport' },
-  { name: 'Netflix', category: 'entertainment' },
-  { name: 'Spotify', category: 'entertainment' },
-  { name: 'Boulangerie Saint Honore', category: 'food' },
-  { name: 'Pharmacie Lafayette', category: 'health' },
-  { name: 'Fnac', category: 'shopping' },
-  { name: 'Zara', category: 'shopping' },
-  { name: 'Total Energies', category: 'utilities' },
-  { name: 'Cafe de Flore', category: 'food' },
-];
-
-function randomRoundup() {
-  const merchant = MERCHANTS[Math.floor(Math.random() * MERCHANTS.length)];
-  return {
-    amount: +(Math.random() * 0.99 + 0.01).toFixed(2),
-    merchant_name: merchant.name,
-    category: merchant.category,
-  };
-}
-
-function addDays(dateStr: string, days: number): string {
-  const d = new Date(dateStr);
-  d.setDate(d.getDate() + days);
-  return d.toISOString().split('T')[0];
-}
-
-// ─── Demo profiles ──────────────────────────────────────────────────────────
-
-const PROFILES: Record<string, { avgPerDay: number; daysActive: number }> = {
-  sophie: { avgPerDay: 3, daysActive: 120 },
-  thomas: { avgPerDay: 5, daysActive: 45 },
-  marie: { avgPerDay: 2, daysActive: 300 },
-};
+import { createNotificationForce } from '@/lib/notifications';
+import {
+  type SimulationSummary,
+  simulateDays,
+  resetSimulationData,
+  CRISIS_TEMPLATES,
+  DEMO_PROFILES,
+} from '@/lib/simulation';
 
 // ─── POST handler ───────────────────────────────────────────────────────────
 
@@ -70,16 +38,26 @@ export async function POST(request: Request) {
     .get();
 
   if (!simState) {
-    const today = new Date().toISOString().split('T')[0];
+    const user = db
+      .select({ createdAt: users.created_at })
+      .from(users)
+      .where(eq(users.id, userId))
+      .get();
+
+    const startDate = user?.createdAt
+      ? user.createdAt.split('T')[0]
+      : new Date().toISOString().split('T')[0];
+
     db.insert(simulation_state)
       .values({
         id: nanoid(),
         user_id: userId,
-        current_date: today,
+        current_date: startDate,
         day_count: 0,
         notification_style: 'warm',
       })
       .run();
+
     simState = db
       .select()
       .from(simulation_state)
@@ -89,195 +67,190 @@ export async function POST(request: Request) {
 
   const currentDate = simState?.current_date ?? new Date().toISOString().split('T')[0];
   const currentDayCount = simState?.day_count ?? 0;
+  const style = (simState?.notification_style ?? 'warm') as 'factual' | 'warm' | 'motivational';
 
   switch (action) {
+    // ─── Simulate One Day ─────────────────────────────────────────────────────
     case 'day': {
-      const newDate = addDays(currentDate, 1);
-      const txCount = Math.floor(Math.random() * 4) + 1;
-      for (let i = 0; i < txCount; i++) {
-        const r = randomRoundup();
-        db.insert(roundups)
-          .values({
-            id: nanoid(),
-            user_id: userId,
-            amount: r.amount,
-            merchant_name: r.merchant_name,
-            category: r.category,
-            timestamp: `${newDate}T${String(8 + i * 3).padStart(2, '0')}:00:00Z`,
-          })
-          .run();
-      }
-      db.update(simulation_state)
-        .set({ current_date: newDate, day_count: currentDayCount + 1 })
-        .where(eq(simulation_state.user_id, userId))
-        .run();
-      return Response.json({ ok: true, date: newDate, transactions: txCount });
+      const summary = simulateDays({
+        userId,
+        daysToSimulate: 1,
+        startDate: currentDate,
+        startDayCount: currentDayCount,
+        notificationStyle: style,
+      });
+
+      return Response.json({ success: true, summary });
     }
 
+    // ─── Simulate One Week ────────────────────────────────────────────────────
     case 'week': {
-      let totalTx = 0;
-      let date = currentDate;
-      for (let d = 0; d < 7; d++) {
-        date = addDays(date, 1);
-        const txCount = Math.floor(Math.random() * 4) + 1;
-        totalTx += txCount;
-        for (let i = 0; i < txCount; i++) {
-          const r = randomRoundup();
-          db.insert(roundups)
-            .values({
-              id: nanoid(),
-              user_id: userId,
-              amount: r.amount,
-              merchant_name: r.merchant_name,
-              category: r.category,
-              timestamp: `${date}T${String(8 + i * 3).padStart(2, '0')}:00:00Z`,
-            })
-            .run();
-        }
-      }
-      db.update(simulation_state)
-        .set({ current_date: date, day_count: currentDayCount + 7 })
-        .where(eq(simulation_state.user_id, userId))
-        .run();
-      return Response.json({ ok: true, date, transactions: totalTx });
+      const summary = simulateDays({
+        userId,
+        daysToSimulate: 7,
+        startDate: currentDate,
+        startDayCount: currentDayCount,
+        notificationStyle: style,
+      });
+
+      return Response.json({ success: true, summary });
     }
 
+    // ─── Simulate One Month ───────────────────────────────────────────────────
     case 'month': {
-      let totalTx = 0;
-      let date = currentDate;
-      for (let d = 0; d < 30; d++) {
-        date = addDays(date, 1);
-        const txCount = Math.floor(Math.random() * 5) + 1;
-        totalTx += txCount;
-        for (let i = 0; i < txCount; i++) {
-          const r = randomRoundup();
-          db.insert(roundups)
-            .values({
-              id: nanoid(),
-              user_id: userId,
-              amount: r.amount,
-              merchant_name: r.merchant_name,
-              category: r.category,
-              timestamp: `${date}T${String(8 + i * 3).padStart(2, '0')}:00:00Z`,
-            })
-            .run();
-        }
-      }
-      db.update(simulation_state)
-        .set({ current_date: date, day_count: currentDayCount + 30 })
-        .where(eq(simulation_state.user_id, userId))
-        .run();
-      return Response.json({ ok: true, date, transactions: totalTx });
+      const summary = simulateDays({
+        userId,
+        daysToSimulate: 30,
+        startDate: currentDate,
+        startDayCount: currentDayCount,
+        notificationStyle: style,
+      });
+
+      return Response.json({ success: true, summary });
     }
 
+    // ─── Simulate to Year End ─────────────────────────────────────────────────
     case 'year-end': {
-      let totalTx = 0;
-      let date = currentDate;
-      const daysLeft = Math.max(1, 365 - currentDayCount);
-      for (let d = 0; d < daysLeft; d++) {
-        date = addDays(date, 1);
-        const txCount = Math.floor(Math.random() * 4) + 1;
-        totalTx += txCount;
-        for (let i = 0; i < txCount; i++) {
-          const r = randomRoundup();
-          db.insert(roundups)
-            .values({
-              id: nanoid(),
-              user_id: userId,
-              amount: r.amount,
-              merchant_name: r.merchant_name,
-              category: r.category,
-              timestamp: `${date}T${String(8 + i * 3).padStart(2, '0')}:00:00Z`,
-            })
-            .run();
-        }
-      }
-      db.update(simulation_state)
-        .set({ current_date: date, day_count: currentDayCount + daysLeft })
-        .where(eq(simulation_state.user_id, userId))
-        .run();
-      return Response.json({ ok: true, date, transactions: totalTx, daysSimulated: daysLeft });
+      // Calculate days remaining until Dec 31 of the current sim year
+      const simYear = new Date(currentDate).getFullYear();
+      const dec31 = `${simYear}-12-31`;
+      const currentDateObj = new Date(currentDate);
+      const endDateObj = new Date(dec31);
+      const daysRemaining = Math.max(
+        1,
+        Math.ceil((endDateObj.getTime() - currentDateObj.getTime()) / (1000 * 60 * 60 * 24)),
+      );
+
+      const summary = simulateDays({
+        userId,
+        daysToSimulate: daysRemaining,
+        startDate: currentDate,
+        startDayCount: currentDayCount,
+        notificationStyle: style,
+      });
+
+      return Response.json({ success: true, summary });
     }
 
+    // ─── Reset Simulation ─────────────────────────────────────────────────────
     case 'reset': {
-      // Delete all roundups for this user
-      db.delete(roundups).where(eq(roundups.user_id, userId)).run();
-      // Reset simulation state
-      const today = new Date().toISOString().split('T')[0];
-      db.update(simulation_state)
-        .set({ current_date: today, day_count: 0 })
-        .where(eq(simulation_state.user_id, userId))
-        .run();
-      // Reset user level
-      db.update(users)
-        .set({ user_level: 1 })
-        .where(eq(users.id, userId))
-        .run();
-      return Response.json({ ok: true, message: 'Data reset' });
+      resetSimulationData(userId);
+
+      const summary: SimulationSummary = {
+        daysSimulated: 0,
+        transactionsGenerated: 0,
+        totalRoundups: 0,
+        notificationsCreated: 0,
+        debitsProcessed: 0,
+        newLevel: null,
+        milestonesReached: [],
+      };
+
+      return Response.json({ success: true, summary });
     }
 
+    // ─── Crisis Event ─────────────────────────────────────────────────────────
     case 'crisis': {
-      db.insert(notifications)
-        .values({
-          id: nanoid(),
-          user_id: userId,
-          type: 'crisis',
-          title: 'Emergency Response Needed',
-          body: 'A humanitarian crisis has been declared. Your chosen charities are mobilizing resources. Consider increasing your round ups this week.',
-          read: 0,
-          created_at: new Date().toISOString(),
-        })
-        .run();
-      return Response.json({ ok: true, message: 'Crisis event triggered' });
+      const crisis = CRISIS_TEMPLATES[
+        Math.floor(Math.random() * CRISIS_TEMPLATES.length)
+      ];
+
+      createNotificationForce(
+        userId,
+        'crisis',
+        crisis.title,
+        crisis.body,
+      );
+
+      const summary: SimulationSummary = {
+        daysSimulated: 0,
+        transactionsGenerated: 0,
+        totalRoundups: 0,
+        notificationsCreated: 1,
+        debitsProcessed: 0,
+        newLevel: null,
+        milestonesReached: [],
+      };
+
+      return Response.json({ success: true, summary });
     }
 
+    // ─── Load Demo Profile ────────────────────────────────────────────────────
     case 'profile': {
-      if (!profile || !PROFILES[profile]) {
-        return Response.json({ error: 'Invalid profile' }, { status: 400 });
+      if (!profile || !DEMO_PROFILES[profile]) {
+        return Response.json({ error: 'Invalid profile. Use: sophie, thomas, marie' }, { status: 400 });
       }
-      const p = PROFILES[profile];
-      // Reset first
-      db.delete(roundups).where(eq(roundups.user_id, userId)).run();
-      const startDate = new Date().toISOString().split('T')[0];
-      let date = startDate;
-      let totalTx = 0;
-      for (let d = 0; d < p.daysActive; d++) {
-        date = addDays(date, 1);
-        const txCount = Math.max(1, Math.floor(Math.random() * p.avgPerDay) + 1);
-        totalTx += txCount;
-        for (let i = 0; i < txCount; i++) {
-          const r = randomRoundup();
-          db.insert(roundups)
-            .values({
-              id: nanoid(),
-              user_id: userId,
-              amount: r.amount,
-              merchant_name: r.merchant_name,
-              category: r.category,
-              timestamp: `${date}T${String(8 + i * 3).padStart(2, '0')}:00:00Z`,
-            })
-            .run();
-        }
-      }
+
+      const p = DEMO_PROFILES[profile];
+
+      // Reset all data first
+      resetSimulationData(userId);
+
+      // Get user created_at for the start date
+      const user = db
+        .select({ createdAt: users.created_at })
+        .from(users)
+        .where(eq(users.id, userId))
+        .get();
+
+      const startDate = user?.createdAt
+        ? user.createdAt.split('T')[0]
+        : new Date().toISOString().split('T')[0];
+
+      // Update simulation state to start from user creation
       db.update(simulation_state)
-        .set({ current_date: date, day_count: p.daysActive })
+        .set({ current_date: startDate, day_count: 0 })
         .where(eq(simulation_state.user_id, userId))
         .run();
-      return Response.json({ ok: true, profile, transactions: totalTx, daysSimulated: p.daysActive });
+
+      // Simulate the profile's days
+      const summary = simulateDays({
+        userId,
+        daysToSimulate: p.daysActive,
+        startDate,
+        startDayCount: 0,
+        notificationStyle: style,
+        txMin: p.txPerDayMin,
+        txMax: p.txPerDayMax,
+        amountMultiplier: p.amountMultiplier,
+      });
+
+      return Response.json({ success: true, profile: p.name, summary });
     }
 
+    // ─── Set Notification Style ───────────────────────────────────────────────
     case 'notification-style': {
-      if (!notificationStyle || !['factual', 'warm', 'motivational'].includes(notificationStyle)) {
-        return Response.json({ error: 'Invalid notification style' }, { status: 400 });
+      if (
+        !notificationStyle ||
+        !['factual', 'warm', 'motivational'].includes(notificationStyle)
+      ) {
+        return Response.json(
+          { error: 'Invalid notification style. Use: factual, warm, motivational' },
+          { status: 400 },
+        );
       }
+
       db.update(simulation_state)
         .set({ notification_style: notificationStyle })
         .where(eq(simulation_state.user_id, userId))
         .run();
-      return Response.json({ ok: true, notificationStyle });
+
+      return Response.json({
+        success: true,
+        summary: {
+          daysSimulated: 0,
+          transactionsGenerated: 0,
+          totalRoundups: 0,
+          notificationsCreated: 0,
+          debitsProcessed: 0,
+          newLevel: null,
+          milestonesReached: [],
+        },
+      });
     }
 
+    // ─── Unknown Action ───────────────────────────────────────────────────────
     default:
-      return Response.json({ error: 'Unknown action' }, { status: 400 });
+      return Response.json({ error: `Unknown action: ${action}` }, { status: 400 });
   }
 }

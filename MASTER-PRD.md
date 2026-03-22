@@ -567,15 +567,15 @@ id (text PK), user_id (text FK), current_date (text), day_count (int), notificat
 - [x] Commit: "Notifications and settings complete"
 
 ### Phase G: Simulation Engine
-- [ ] Demo mode controls in Settings
-- [ ] Transaction generator with all categories, merchants, seasonal patterns
-- [ ] Round-up processing, allocation, debit batching
-- [ ] Milestone checking, notification generation
-- [ ] Crisis event simulation
-- [ ] Demo profiles (Sophie, Thomas, Marie)
-- [ ] Notification copy variants (Factual/Warm/Motivational)
-- [ ] Year-end PDF with simulated data
-- [ ] Commit: "Simulation engine complete"
+- [x] Demo mode controls in Settings
+- [x] Transaction generator with all categories, merchants, seasonal patterns
+- [x] Round-up processing, allocation, debit batching
+- [x] Milestone checking, notification generation
+- [x] Crisis event simulation
+- [x] Demo profiles (Sophie, Thomas, Marie)
+- [x] Notification copy variants (Factual/Warm/Motivational)
+- [x] Year-end PDF with simulated data
+- [x] Commit: "Simulation engine complete"
 
 ### Phase H: Landing Page
 - [ ] Full landing page with all sections (hero, how it works, live demo, tax calculator, charity showcase, comparison, numbers, social proof, FAQ, CTA, footer)
